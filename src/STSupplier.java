@@ -15,3 +15,4 @@ public interface STSupplier {
      */
     <K extends Comparable<K>, V> ST<K, V> getNew();
 }
+

@@ -33,16 +33,16 @@ public class HashtableB<K extends Comparable<K>, V> implements ST<K, V> {
     /**
      * Constructs an empty {@code HashtableB} with the specified {@code maximum}, {@code minimum}, and {@code set} fullness ratios
      *
-     * @param  maximum the maximum fullness
-     * @param  minimum the minimum fullness
-     * @param  set  the fullness when the array is resized.
+     * @param  maximum	the maximum fullness
+     * @param  minimum	the minimum fullness
+     * @param  set		the fullness when the array is resized.
      * @throws IllegalArgumentException if {@code minimum} is less than or equal to zero
-     *     or {@code set} is less or equal to than {@code minimum}
-     *     or {@code maximum} is less than or equal to {@code set}
-     *     or {@code maximum} is greater than one.
+     * 				or {@code set} is less or equal to than {@code minimum}
+     * 				or {@code maximum} is less than or equal to {@code set}
+     * 				or {@code maximum} is greater than one.
      */
     @SuppressWarnings("unchecked")
-    public HashtableB(double maximum, double minimum, double set) throws IllegalArgumentException {
+	public HashtableB(double maximum, double minimum, double set) throws IllegalArgumentException {
         if (0 >= minimum)
             throw new IllegalArgumentException("Illegal minimum fullness: " + minimum);
         if (minimum >= set)
@@ -50,7 +50,7 @@ public class HashtableB<K extends Comparable<K>, V> implements ST<K, V> {
         if (set >= maximum)
             throw new IllegalArgumentException("Set fullness is greater than or equal to maximum.");
         if (maximum >= 1)
-            throw new IllegalArgumentException("Illegal maximum fullness: " + maximum);
+        	throw new IllegalArgumentException("Illegal maximum fullness: " + maximum);
         
         size = 0;
         capacity = MIN_CAPACITY;
@@ -65,12 +65,12 @@ public class HashtableB<K extends Comparable<K>, V> implements ST<K, V> {
      * Constructs an empty {@code HashtableB} with the specified {@code maximum} and {@code minimum} fullness ratios,
      * and a default {@code set} ratio.
      *
-     * @param  maximum the maximum fullness
-     * @param  minimum the minimum fullness
+     * @param  maximum	the maximum fullness
+     * @param  minimum	the minimum fullness
      * @throws IllegalArgumentException if {@code minimum} is less than or equal to zero
-     *     or {@code minimum} is greater than the default {@code set}
-     *     or {@code maximum} is less than or equal to the default {@code set}
-     *     or {@code maximum} is greater than one.
+     * 				or {@code minimum} is greater than the default {@code set}
+     * 				or {@code maximum} is less than or equal to the default {@code set}
+     * 				or {@code maximum} is greater than one.
      */
     public HashtableB(double maximum, double minimum) throws IllegalArgumentException {
         this(maximum, minimum, 0.5);
@@ -84,55 +84,55 @@ public class HashtableB<K extends Comparable<K>, V> implements ST<K, V> {
         this(0.75, 0.25);
     }
     
-    /**
-     * Returns the current number of keys with associated values.
-     * 
-     * @return the number of currently-mapped keys
-     */
-    public int size() {
-        return size;
-    }
-    
-    /**
-     * Returns {@code true} if this map contains no key-value mappings.
-     *
-     * @return {@code true} if this map contains no key-value mappings
-     */
-    public boolean isEmpty() {
-        return size == 0;
-    }
-    
-    // A hash of the key. I used the absolute value of the key's hashcode so that I didn't get weird negative indices.
-    private int hash(K key) throws NullPointerException {
-        if(key == null)
-            throw new NullPointerException("Key is not allowed to be null");
-        return Math.abs(key.hashCode());
-    }
-    
-    private int getIndex(K key) {
-        int i = hash(key) % capacity;
-        while (array[i] != null && !key.equals(array[i].k)) {
-            i = (i+1) % capacity;
-        }
-        return i;
-    }
-    
-    /**
-     * Returns the value that is mapped to the given key.
-     *
-     * @param key the key to locate
-     * @return the value mapped to {@code key} or {@code null} if not found
-     * @throws NullPointerException if the specified key is null
-     */
-    public V get(K key) throws NullPointerException {
-        if (key == null)
-            throw new NullPointerException("Key is not allowed to be null");
-        
-        int i = getIndex(key);
-        return array[i]==null? null : array[i].v;
-    }
-    
-    /**
+	/**
+	 * Returns the current number of keys with associated values.
+	 * 
+	 * @return the number of currently-mapped keys
+	 */
+	public int size() {
+	    return size;
+	}
+
+	/**
+	 * Returns {@code true} if this map contains no key-value mappings.
+	 *
+	 * @return {@code true} if this map contains no key-value mappings
+	 */
+	public boolean isEmpty() {
+	    return size == 0;
+	}
+	
+	// A hash of the key. I used the absolute value of the key's hashcode so that I didn't get weird negative indices.
+	private int hash(K key) throws NullPointerException {
+		if(key == null)
+			throw new NullPointerException("Key is not allowed to be null");
+	    return Math.abs(key.hashCode());
+	}
+	
+	private int getIndex(K key) {
+		int i = hash(key) % capacity;
+	    while (array[i] != null && !key.equals(array[i].k)) {
+	        i = (i+1) % capacity;
+	    }
+	    return i;
+	}
+
+	/**
+	 * Returns the value that is mapped to the given key.
+	 *
+	 * @param key the key to locate
+	 * @return the value mapped to {@code key} or {@code null} if not found
+	 * @throws NullPointerException if the specified key is null
+	 */
+	public V get(K key) throws NullPointerException {
+		if (key == null)
+			throw new NullPointerException("Key is not allowed to be null");
+	    
+	    int i = getIndex(key);
+	    return array[i]==null? null : array[i].v;
+	}
+
+	/**
      * Returns {@code true} if this hash table contains a mapping for the specified
      * key.
      *
@@ -142,11 +142,11 @@ public class HashtableB<K extends Comparable<K>, V> implements ST<K, V> {
      * @throws NullPointerException if the specified key is null
      */
     public boolean containsKey(K key) throws NullPointerException {
-        if (key == null)
-            throw new NullPointerException("Key is not allowed to be null");
-        
-        int i = getIndex(key);
-        return array[i] != null;
+    	if (key == null)
+    		throw new NullPointerException("Key is not allowed to be null");
+    	
+    	int i = getIndex(key);
+	    return array[i] != null;
     }
     
     /**
@@ -158,50 +158,31 @@ public class HashtableB<K extends Comparable<K>, V> implements ST<K, V> {
      * @throws NullPointerException if the specified value is null
      */
     public boolean containsValue(V value) throws NullPointerException {
-        if (value == null)
-            throw new NullPointerException("Value is not allowed to be null");
-        
-        for (Pair<K, V> p : array) {
-            if (value == null)
-                throw new NullPointerException("Value is not allowed to be null");
-            if (p == null)
-                throw new NullPointerException("p is not allowed to be null");
-            if (p.v == null)
-                throw new NullPointerException("p.v is not allowed to be null");
-            if(value.equals(p.v))
-                return true;
-        }
-        
-        return false;
+    	if (value == null)
+			throw new NullPointerException("Value is not allowed to be null");
+    	
+    	for (Pair<K, V> p : array) {
+    		if(p!=null && value.equals(p.v))
+    			return true;
+    	}
+    	
+    	return false;
     }
-    
+
     /**
-     * Returns the set of all the keys contained in this hash table.
-     * 
-     * @return the set of all the keys contained in this hash table
-     */
-    public Set<K> getAllKeys(){
-        Set<K> set = new HashSet<K>(size);
-        for(Pair<K, V> p : array)
-            if(p != null)
-            set.add(p.k);
-        return set;
-    }
-    
-    /**
-     * Returns the set of all the keys contained in this hash table.
-     * 
-     * @return the set of all the keys contained in this hash table
-     */
-    public Set<K> getAllKeys() {
-        Set<K> set = new HashSet<K>(size);
-        for (Pair<K, V> p : array)
-            if(p != null)
-            set.add(p.k);
-        return set;
-    }
-    
-    /**
+	 * Returns the set of all the keys contained in this hash table.
+	 * 
+	 * @return the set of all the keys contained in this hash table
+	 */
+	public Set<K> getAllKeys() {
+	    Set<K> set = new HashSet<K>(size);
+	    for (Pair<K, V> p : array)
+	        if(p != null)
+	        	set.add(p.k);
+	    return set;
+	}
+
+	/**
      * Associates the specified value with the specified key in this hash table.  If the hash table previously
      * contained a mapping for the key, the old value is replaced by the specified value.
      *
@@ -210,13 +191,13 @@ public class HashtableB<K extends Comparable<K>, V> implements ST<K, V> {
      * 
      * @throws NullPointerException if the specified key or value is null
      */
-    public V put(K key, V val) throws NullPointerException {
-        if (key == null)
-            throw new NullPointerException("Key is not allowed to be null");
-        if (val == null)
-            throw new NullPointerException("Value is not allowed to be null");
+	public V put(K key, V val) throws NullPointerException {
+		if (key == null)
+			throw new NullPointerException("Key is not allowed to be null");
+		if (val == null)
+			throw new NullPointerException("Value is not allowed to be null");
         
-        int i = getIndex(key);
+		int i = getIndex(key);
         
         if(array[i] == null){ // If we are putting a new key in, increase the size.
             size++;
@@ -224,10 +205,10 @@ public class HashtableB<K extends Comparable<K>, V> implements ST<K, V> {
             resizeIfNeeded(); // If we need to resize, do so.
             return null;
         } else {
-            assert key.equals(array[i].k);
-            V previousValue = array[i].v;
-            array[i].v = val;
-            return previousValue;
+        	assert key.equals(array[i].k);
+        	V previousValue = array[i].v;
+        	array[i].v = val;
+        	return previousValue;
         }
         
     }
@@ -241,47 +222,47 @@ public class HashtableB<K extends Comparable<K>, V> implements ST<K, V> {
      * @throws NullPointerException if the specified map is null
      */
     public void putAll(Map<? extends K, ? extends V> m) throws NullPointerException {
-        for(java.util.Map.Entry<? extends K, ? extends V> e : m.entrySet())
-            put(e.getKey(), e.getValue());
+    	for(java.util.Map.Entry<? extends K, ? extends V> e : m.entrySet())
+    		put(e.getKey(), e.getValue());
     }
     
     /**
-     * Removes the mapping for a key from the hash table if it is present.
-     *
-     * <p>The hash table will not contain a mapping for the specified key once the call returns.
-     *
-     * @param key key whose mapping is to be removed from the hash table
-     * @throws NullPointerException if the specified key is null
-     */ 
-    public V remove(K key) throws NullPointerException{
-        if(key == null)
-            throw new NullPointerException("Key is not allowed to be null");
-        List<Pair<K, V>> pairs = new ArrayList<Pair<K, V>>();
-        
-        
-        // Find our key.
-        int i = getIndex(key);
-        
-        if(array[i] == null)
+	 * Removes the mapping for a key from the hash table if it is present.
+	 *
+	 * <p>The hash table will not contain a mapping for the specified key once the call returns.
+	 *
+	 * @param key key whose mapping is to be removed from the hash table
+	 * @throws NullPointerException if the specified key is null
+	 */ 
+	public V remove(K key) throws NullPointerException{
+		if(key == null)
+			throw new NullPointerException("Key is not allowed to be null");
+	    List<Pair<K, V>> pairs = new ArrayList<Pair<K, V>>();
+	    
+	    
+	    // Find our key.
+	    int i = getIndex(key);
+	    
+	    if(array[i] == null)
             return null;
-        
-        // Remove all the keys that could have been "forced over" by this key.
-        while(array[i] != null){
-            pairs.add(array[i]);
-            array[i] = null;
-            size--;
-            i = (i+1) % capacity;
-        }
-        
-        V value = pairs.remove(0).v; // Remove the key we're deleting.
-        
-        for(Pair<K, V> p : pairs)
-            this.put(p.k, p.v); // Put the rest back in the hashtable.
-        
-        return value;
-    }
-    
-    /**
+	    
+	    // Remove all the keys that could have been "forced over" by this key.
+	    while(array[i] != null){
+	        pairs.add(array[i]);
+	        array[i] = null;
+	        size--;
+	        i = (i+1) % capacity;
+	    }
+	    
+	    V value = pairs.remove(0).v; // Remove the key we're deleting.
+	    
+	    for(Pair<K, V> p : pairs)
+	        this.put(p.k, p.v); // Put the rest back in the hashtable.
+	    
+	    return value;
+	}
+
+	/**
      * Resizes the array and copies over the elements if the size is out of bounds.
      * 
      */
@@ -292,7 +273,7 @@ public class HashtableB<K extends Comparable<K>, V> implements ST<K, V> {
         int newCapacity = (int) (size/setFullness); // The size of the new array
         
         @SuppressWarnings("unchecked")
-        Pair<K, V>[] newArray = (Pair<K, V>[]) new Pair[newCapacity];
+		Pair<K, V>[] newArray = (Pair<K, V>[]) new Pair[newCapacity];
         
         for(int j=0; j<capacity; j++){
             Pair<K, V> q = array[j];
@@ -309,59 +290,59 @@ public class HashtableB<K extends Comparable<K>, V> implements ST<K, V> {
         this.capacity = newCapacity;
     }
     
-    public String toString(){
+	public String toString(){
         return String.format("Hashtable(%.2f, %.2f, %.2f)", maxFullness, minFullness, setFullness);
     }
-    
-    /* (non-Javadoc)
-     * @see java.lang.Object#hashCode()
-     */
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + Arrays.hashCode(this.array);
-        result = prime * result + this.capacity;
-        long temp;
-        temp = Double.doubleToLongBits(this.maxFullness);
-        result = prime * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(this.minFullness);
-        result = prime * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(this.setFullness);
-        result = prime * result + (int) (temp ^ (temp >>> 32));
-        result = prime * result + this.size;
-        return result;
-    }
-    
-    /* (non-Javadoc)
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (!(obj instanceof HashtableB))
-            return false;
-        HashtableB<?, ?> other = (HashtableB<?, ?>) obj;
-        if (!Arrays.equals(this.array, other.array))
-            return false;
-        if (this.capacity != other.capacity)
-            return false;
-        if (Double.doubleToLongBits(this.maxFullness) != Double
-                .doubleToLongBits(other.maxFullness))
-            return false;
-        if (Double.doubleToLongBits(this.minFullness) != Double
-                .doubleToLongBits(other.minFullness))
-            return false;
-        if (Double.doubleToLongBits(this.setFullness) != Double
-                .doubleToLongBits(other.setFullness))
-            return false;
-        if (this.size != other.size)
-            return false;
-        return true;
-    }
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + Arrays.hashCode(this.array);
+		result = prime * result + this.capacity;
+		long temp;
+		temp = Double.doubleToLongBits(this.maxFullness);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(this.minFullness);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(this.setFullness);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		result = prime * result + this.size;
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof HashtableB))
+			return false;
+		HashtableB<?, ?> other = (HashtableB<?, ?>) obj;
+		if (!Arrays.equals(this.array, other.array))
+			return false;
+		if (this.capacity != other.capacity)
+			return false;
+		if (Double.doubleToLongBits(this.maxFullness) != Double
+				.doubleToLongBits(other.maxFullness))
+			return false;
+		if (Double.doubleToLongBits(this.minFullness) != Double
+				.doubleToLongBits(other.minFullness))
+			return false;
+		if (Double.doubleToLongBits(this.setFullness) != Double
+				.doubleToLongBits(other.setFullness))
+			return false;
+		if (this.size != other.size)
+			return false;
+		return true;
+	}
 }
 
 // A key-value pair.
@@ -373,84 +354,84 @@ class Pair<K, V>{
         k = key;
         v = val;
     }
-    
-    /* (non-Javadoc) 
-     * @see java.lang.Object#hashCode()
-     */
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((this.k == null) ? 0 : this.k.hashCode());
-        result = prime * result + ((this.v == null) ? 0 : this.v.hashCode());
-        return result;
-    }
-    
-    /* (non-Javadoc)
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (!(obj instanceof Pair))
-            return false;
-        @SuppressWarnings("unchecked")
-        Pair<K, V> other = (Pair<K, V>) obj;
-        if (this.k == null) {
-            if (other.k != null)
-                return false;
-        } else if (!this.k.equals(other.k))
-            return false;
-        if (this.v == null) {
-            if (other.v != null)
-                return false;
-        } else if (!this.v.equals(other.v))
-            return false;
-        return true;
-    }
+
+	/* (non-Javadoc) 
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((this.k == null) ? 0 : this.k.hashCode());
+		result = prime * result + ((this.v == null) ? 0 : this.v.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof Pair))
+			return false;
+		@SuppressWarnings("unchecked")
+		Pair<K, V> other = (Pair<K, V>) obj;
+		if (this.k == null) {
+			if (other.k != null)
+				return false;
+		} else if (!this.k.equals(other.k))
+			return false;
+		if (this.v == null) {
+			if (other.v != null)
+				return false;
+		} else if (!this.v.equals(other.v))
+			return false;
+		return true;
+	}
 }
 
 class HashtableBSupplier implements STSupplier {
-    private double max; // determines how full the array can get before resizing occurs; default 1/2
+	private double max; // determines how full the array can get before resizing occurs; default 1/2
     private double min; // determines how empty the array can get before resizing occurs; default 3/4
     private double set; // determines how full the array should be made when resizing; default 1/4
     
     /**
      * Constructs empty {@code HashtableB}'s with the specified {@code maximum}, {@code minimum}, and {@code set} fullness ratios
      *
-     * @param  maximum the maximum fullness
-     * @param  minimum the minimum fullness
-     * @param  set  the fullness when the arrays are resized
+     * @param  maximum	the maximum fullness
+     * @param  minimum	the minimum fullness
+     * @param  set		the fullness when the arrays are resized
      * 
      * @see HashtableB
      */
-    public HashtableBSupplier(double maximum, double minimum, double set){        
+	public HashtableBSupplier(double maximum, double minimum, double set){        
         max = maximum;
         min = minimum;
         this.set = set;
     }
-    
-    public HashtableBSupplier(double maximum, double minimum){
-        this(maximum, minimum, 0.5);
-    }
-    
-    public HashtableBSupplier(){
-        this(0.75, 0.30);
-    }
-    
-    public <K extends Comparable<K>, V> ST<K, V> getNew() {
-        return new HashtableB<K, V>(max, min, set);
-    }
-    
-    public String toString() {
-        if(set == 0.5)
-            return String.format("HT-B(%d/%d)", (int) (max*100), (int) (min*100));
-        else
-            return String.format("HT-B(%d/%d/%d)", (int) (max*100), (int) (min*100), (int) (set*100));
-    }
+	
+	public HashtableBSupplier(double maximum, double minimum){
+		this(maximum, minimum, 0.5);
+	}
+	
+	public HashtableBSupplier(){
+		this(0.75, 0.30);
+	}
+	
+	public <K extends Comparable<K>, V> ST<K, V> getNew() {
+		return new HashtableB<K, V>(max, min, set);
+	}
+	
+	public String toString() {
+		if(set == 0.5)
+			return String.format("HT-B(%d/%d)", (int) (max*100), (int) (min*100));
+		else
+			return String.format("HT-B(%d/%d/%d)", (int) (max*100), (int) (min*100), (int) (set*100));
+	}
 }
 
 
@@ -478,10 +459,10 @@ class HashtableBSupplier implements STSupplier {
 
 
 /*public boolean checkSize(){
- int x = 0;
- for(int i=0; i<capacity; i++){
- if(array[i] != null)
- x++;
- }
- return x == size;
- }*/
+    int x = 0;
+    for(int i=0; i<capacity; i++){
+        if(array[i] != null)
+            x++;
+    }
+    return x == size;
+}*/
