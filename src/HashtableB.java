@@ -146,7 +146,7 @@ public class HashtableB<K extends Comparable<K>, V> implements ST<K, V> {
     		throw new NullPointerException("Key is not allowed to be null");
     	
     	int i = getIndex(key);
-	    return array[i] == null;
+	    return array[i] != null;
     }
     
     /**
@@ -161,9 +161,10 @@ public class HashtableB<K extends Comparable<K>, V> implements ST<K, V> {
     	if (value == null)
 			throw new NullPointerException("Value is not allowed to be null");
     	
-    	for(Pair<K, V> p : array)
-    		if(value.equals(p.v))
+    	for (Pair<K, V> p : array) {
+    		if(p!=null && value.equals(p.v))
     			return true;
+    	}
     	
     	return false;
     }
@@ -173,11 +174,11 @@ public class HashtableB<K extends Comparable<K>, V> implements ST<K, V> {
 	 * 
 	 * @return the set of all the keys contained in this hash table
 	 */
-	public Set<K> getAllKeys(){
+	public Set<K> getAllKeys() {
 	    Set<K> set = new HashSet<K>(size);
-	    for(Pair<K, V> p : array)
+	    for (Pair<K, V> p : array)
 	        if(p != null)
-	        set.add(p.k);
+	        	set.add(p.k);
 	    return set;
 	}
 

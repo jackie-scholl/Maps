@@ -50,7 +50,7 @@ public class RedBlackTree<K extends Comparable<K>, V> implements ST<K, V>{
 		if (key == null)
 			throw new NullPointerException("Key is not allowed to be null");
 		
-		return get(key) == null;
+		return get(key) != null;
 	}
 
 	public boolean containsValue(V value) {

@@ -46,7 +46,7 @@ public class LinkedList<K extends Comparable<K>, V> implements ST<K, V> {
     public boolean containsKey(K key) throws NullPointerException {
 		if (key == null)
 			throw new NullPointerException("Key is not allowed to be null");
-		return get(key) == null;
+		return get(key) != null;
 	}
 
 	public boolean containsValue(V value) throws NullPointerException {
