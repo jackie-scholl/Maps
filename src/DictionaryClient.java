@@ -32,14 +32,14 @@ public class DictionaryClient {
         test6(5);
         
         long middle = System.currentTimeMillis();
-        if(middle-start<500){
-            //test7(30, 10, 3, 1, 0);
-            test7(100, 10, 3, 1, 0);
+        if(middle-start<1000){
+            test7(30, 10, 3, 0);
+            //test7(100, 10, 3, 0);
             //test7(1000, 10, 3, 1, 0);
             //test7(10000, 10, 3, 1, 0);
             //test7(100000, 10, 3, 1, 0);
             
-            //test8(5, 10, 3, 0, 2);
+            test8(5, 10, 3, 2);
             //test8(100, 10, 3, 0, 2);
             //test8(250, 10, 3, 0, 2);
             //test8(1000, 10, 3, 0, 2);
@@ -135,19 +135,16 @@ public class DictionaryClient {
         
         for (STSupplier stSup : mainSTSups) {
             ST<String, String> st = stSup.getNew();
-            if (stSup.canDelete()) {
-                System.out.printf("Test #%d, %s%n", testNum, st.toString());
-                test2h(st);
-            } else {
-                System.out.printf("Test #%d, %s can't delete%n", testNum, st.toString());
-            }
+            System.out.printf("Test #%d, %s%n", testNum, st.toString());
+            test3h(st);
         }
         
         System.out.printf("Test %d completed successfully%n%n", testNum);
     }
     
-    private static void test3h(ST<String, String> dict){
-        System.out.printf("Test #3, %s%n", dict.toString());
+    private static void test3h(ST<String, String> dict) {
+        if (!dict.canRemove())
+            return;
         dict.put("orange", "fruit");
         dict.put("bread", "starch");
         dict.put("giraffe", "animal");
@@ -173,9 +170,8 @@ public class DictionaryClient {
     private static void test4(int n){
         System.out.printf("Test 4 started with n=%d\n", n);
         
-        for (STSupplier stSup : mainSTSups) {
+        for (STSupplier stSup : mainSTSups)
             test4h(stSup.<Integer, Integer>getNew(), n);
-        }
         
         System.out.println("Test 4 completed successfully\n");
     }
@@ -269,7 +265,7 @@ public class DictionaryClient {
         }
     } 
     
-    private static void test7 (int REP, double... amounts) {
+    private static void test7(int REP, double... amounts) {
         double[] limits = getLimits(amounts);
         int n = 10000;
         
@@ -348,6 +344,8 @@ public class DictionaryClient {
     }
     
     private static double test7h(ST<Integer, Integer> st, int n, double[] limits){
+        final int MAX = (int) (1.5*SIZE);
+        
         Average avg = new Average();
         
         TreeSet<Integer> set = new TreeSet<Integer>(st.getAllKeys());
@@ -363,46 +361,31 @@ public class DictionaryClient {
             
             // If deletes are on and delete is chosen, decide whether to delete or put new
             // based on difference from intended size.
-            if (c==3) {
+            /*if (c==3) {
                 double ratio = (set.size()/SIZE)/2;
                 if(r.nextDouble()<ratio)
                     c = 3;
                 else
                     c = 2;
-            }
+            }*/
             
             if (c==0) { // Get
                 if(set.size() > 0){
-                    Integer rn;
-                    do
-                        rn = (int) (r.nextDouble()*5*SIZE);
-                    while (!set.contains(rn));
-                    assert set.contains(rn);
+                    Integer rn = (int) (r.nextDouble()*MAX);
                     st.get(rn);
                 }
-            } else if (c==1) { //change existing
-                if(set.size() > 0){
-                    Integer k;
-                    do
-                        k = (int) (r.nextDouble()*5*SIZE);
-                    while (!set.contains(k));
-                    int v = r.nextInt();
-                    st.put(k, v);
-                }
-            } else if (c==2) { //add new
-                int k = (int) (r.nextDouble()*5*SIZE);
+            } else if (c==1) { // put
+                int k = (int) (r.nextDouble()*MAX);
                 int v = r.nextInt();
-                set.add(k);
                 st.put(k, v);
-            } else if (c==3) { //delete
-                if(set.size() > 0){
-                    Integer k;
-                    do
-                        k = (int) (r.nextDouble()*5*SIZE);
-                    while (!set.contains(k));
-                    set.remove(k);
-                    st.remove(k);
-                }
+            } else if (c==2) { //delete
+                Integer k = (int) (r.nextDouble()*MAX);
+                assert k != null;
+                /*do
+                    k = (int) (r.nextDouble()*MAX);
+                while (!set.contains(k));
+                    set.remove(k);*/
+                st.remove(k);
             }
             long end = System.nanoTime();
             avg.add(end-start);
@@ -624,105 +607,3 @@ class StatsList{
         return String.format("%6.3f (%6.3f)", mean(), stddevMean());
     }
 }
-
-
-    /*
-    private static void test3() {
-        int[] nl = {100, 400, 1600};
-        
-        double[] factorsA = {5.0};
-        double[] marginsA = {0.5};
-        
-        STSupplier[] suppliers = (STSupplier[]) new STSupplier[] {RBTsup, LLsup};
-        
-        double[] maxsB = {0.75};
-        double[] minsB = {0.25};
-        
-        for (int n : nl) {
-            System.out.printf("Test 3 started with n=%d\n", n);
-            
-            if(n < 1500)
-                test3h(new LinkedList<Integer, Integer>(), n);
-            test3h(new RedBlackTree<Integer, Integer>(), n);
-            
-            for(STSupplier supplier : suppliers)
-            for(double fac : factorsA)
-            for(double marg : marginsA)
-                test3h(new HashtableA<Integer, Integer>(supplier, 11, fac, marg), n);
-            
-            for(double max : maxsB)
-            for(double min : minsB)
-                test3h(new HashtableB<Integer, Integer>(max, min), n);
-            
-            System.out.println("Test 3 completed successfully\n");
-        }
-    }
-    
-    private static double test3h(ST<Integer, Integer> st, int n){
-        long start = System.nanoTime();
-        
-        for(int i=0; i<n; i++){
-            int x = Math.abs(r.nextInt());
-            st.put(x, 0);
-        }
-        
-        List<Integer> ls = new ArrayList<Integer>(st.getAllKeys());
-        for(int i=0; i<10; i++){
-            Collections.shuffle(ls);
-            for(int x : ls)
-                st.get(x);
-        }
-        
-        long end = System.nanoTime();
-        double diff = end-start;
-        
-        System.out.printf("%-28s -> %.4f (%6.0f) %n", st.toString(), diff/Math.pow(10,9), diff/n);
-        return diff;
-    }*/
-
-
-                
-                /*if (j==0)
-                    st = new LinkedList<Integer, Integer>();
-                else if (j==1)
-                    st = new HashtableA<Integer, Integer>(LLsup);
-                else if (j==2)
-                    st = new HashtableB<Integer, Integer>();
-                else if (j==3)
-                    st = new RedBlackTree<Integer, Integer>();
-                else if (j==4)
-                    st = new HashtableA<Integer, Integer>(RBTsup);
-                else
-                    throw new RuntimeException("WTF");*/
-
-
-        /*
-        test5h(new LinkedList<String, String>());
-        //test4h(new RedBlackTree<String, String>());
-        //test5h(new HashtableA<String, String>(RBTsup));
-        test5h(new HashtableA<String, String>(LLsup));
-        test5h(new HashtableB<String, String>());*/
-
-
-        
-        /*test4h(new LinkedList<Integer, Integer>(), n);  
-        test4h(new RedBlackTree<Integer, Integer>(), n);
-        test4h(new HashtableA<Integer, Integer>(LLsup), n);
-        test4h(new HashtableA<Integer, Integer>(RBTsup), n);
-        test4h(new HashtableB<Integer, Integer>(), n);*/
-
-
-        /*
-        test2h(new LinkedList<String, String>());
-        test2h(new RedBlackTree<String, String>());
-        test2h(new HashtableA<String, String>(LLsup));
-        test2h(new HashtableA<String, String>(RBTsup));
-        test2h(new HashtableB<String, String>());*/
-
-
-        /*
-        test1h(new LinkedList<String, String>());
-        test1h(new RedBlackTree<String, String>());
-        test1h(new HashtableA<String, String>(RBTsup));
-        test1h(new HashtableA<String, String>(LLsup));
-        test1h(new HashtableB<String, String>());*/

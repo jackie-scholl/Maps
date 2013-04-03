@@ -88,4 +88,11 @@ public interface ST<K extends Comparable<K>, V> {
      * @throws UnsupportedOperationException if the {@code remove} operation is not supported by this map
      */
     V remove(K key) throws NullPointerException, UnsupportedOperationException;
+    
+    /**
+     * Returns whether or not thissymbol table supports the {@code remove} operation.
+     * 
+     * @return whether or not the symbol table can remove
+     */
+    boolean canRemove();
 }

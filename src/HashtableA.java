@@ -174,6 +174,10 @@ public class HashtableA<K extends Comparable<K>, V> implements ST<K, V>  {
         return value;
     }
     
+    public boolean canRemove() {
+        return newST().canRemove();
+    }
+    
     private ST<K, V> newST(){
         return supplier.<K, V>getNew();
     }
@@ -257,23 +261,9 @@ class HashtableASupplier implements STSupplier {
     
     public String toString() {
         return String.format("HT:%s", supplier.toString());
-        
-        //if(set==5.0 && max==7.0 && min==3.0 && cap==16)
-        //else
-        //return String.format("HT-B(%d/%d/%d)", (int) (max*100), (int) (min*100), (int) (set*100));
     }
     
     public boolean canDelete() {
         return true;
     }
 }
-
-/*
- public boolean checkSize(){
- int x = 0;
- for(int i=0; i<cap; i++){
- if(arr[i] != null)
- x += arr[i].size();
- }
- return x == size;
- }*/

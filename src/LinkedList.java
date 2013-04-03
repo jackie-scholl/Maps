@@ -101,6 +101,10 @@ public class LinkedList<K extends Comparable<K>, V> implements ST<K, V> {
         return null;
     }
     
+    public boolean canRemove() {
+        return true;
+    }
+    
     public V remove(K key) throws NullPointerException {
         if (key == null)
             throw new NullPointerException("Key is not allowed to be null");
@@ -114,11 +118,11 @@ public class LinkedList<K extends Comparable<K>, V> implements ST<K, V> {
         
         Node n = head;
         
-        while(!key.equals(n.next.key)){
+        while (n.next!=null && !key.equals(n.next.key)) {
             n = n.next;
         }
         
-        if(key.equals(n.next.key)){
+        if (n.next != null) {
             V value = n.next.val;
             n.next = n.next.next;
             size--;
@@ -160,20 +164,3 @@ class LinkedListSupplier implements STSupplier {
         return true;
     }
 }
-/*
- public boolean checkSize(){
- int x = 0;
- Node n = head;
- while(n != null){
- x++;
- n = n.next;
- }
- return x == size;
- }*/
-
-/*
- private String print(Node n){
- if(n==null)
- return "";
- return n.key.toString()+" "+print(n.next);
- }*/

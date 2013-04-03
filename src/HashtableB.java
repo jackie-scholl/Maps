@@ -226,6 +226,10 @@ public class HashtableB<K extends Comparable<K>, V> implements ST<K, V> {
             put(e.getKey(), e.getValue());
     }
     
+    public boolean canRemove() {
+        return true;
+    }
+    
     /**
      * Removes the mapping for a key from the hash table if it is present.
      *
@@ -437,36 +441,3 @@ class HashtableBSupplier implements STSupplier {
         return true;
     }
 }
-
-
-/*
- public boolean equals(Objec){
- return k.equals(key);
- }*/
-
-/*
- public HashtableB(double factor, double margin){
- this(factor*(1.0+margin), factor/(1.0+margin), factor);
- }*/
-
-/*
- public static long hash(String key){
- long x = 0;
- for(int i=0; i<key.length(); i++){
- //x = x*257 + key.charAt(0);
- x = x*257 + key.charAt(i);
- }
- return x;
- }*/
-
-
-
-
-/*public boolean checkSize(){
- int x = 0;
- for(int i=0; i<capacity; i++){
- if(array[i] != null)
- x++;
- }
- return x == size;
- }*/

@@ -9,6 +9,7 @@ class Mock<K extends Comparable<K>, V> implements ST<K, V> {
     public V put(K key, V val) {     return null;    }
     public Set<K> getAllKeys() {  return new HashSet<K>(); }
     public int size() {  return -1; }
+    public boolean canRemove() {        return true;    }
     public V remove(K key) {     return null;    }
     public String toString() {  return "Mock"; }
     public boolean isEmpty() {  return false; }
