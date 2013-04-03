@@ -14,31 +14,31 @@ import java.util.*;
  * 
  */
 public interface ST<K extends Comparable<K>, V> {
-	/**
-	 * Returns the current number of key-value mappings.
-	 * 
-	 * @return the number of key-value mappings
-	 */
-	int size();
-	
-	/**
-	 * Returns {@code true} if there are no key-value mappings in this map.
-	 * 
-	 * @return {@code true} if there are no key-value mappings in this map
-	 */
-	boolean isEmpty();
-
-	/**
-	 * Returns the value that is mapped to the given key.
-	 *
-	 * @param key the key to locate
-	 * @return the value mapped to {@code key} or {@code null} if not found
-	 * 
-	 * @throws NullPointerException if the specified key is null
-	 */
-	V get(K key) throws NullPointerException;
-
-	/**
+    /**
+     * Returns the current number of key-value mappings.
+     * 
+     * @return the number of key-value mappings
+     */
+    int size();
+    
+    /**
+     * Returns {@code true} if there are no key-value mappings in this map.
+     * 
+     * @return {@code true} if there are no key-value mappings in this map
+     */
+    boolean isEmpty();
+    
+    /**
+     * Returns the value that is mapped to the given key.
+     *
+     * @param key the key to locate
+     * @return the value mapped to {@code key} or {@code null} if not found
+     * 
+     * @throws NullPointerException if the specified key is null
+     */
+    V get(K key) throws NullPointerException;
+    
+    /**
      * Returns {@code true} if this map contains a mapping for the specified key.
      *
      * @param key key whose presence in this map is to be tested
@@ -46,25 +46,25 @@ public interface ST<K extends Comparable<K>, V> {
      * @throws NullPointerException if the specified key is null
      */
     boolean containsKey(K key) throws NullPointerException;
-	
-	/**
-	 * Returns {@code true} if this map maps one or more keys to the specified value.
-	 *
-	 * @param value value whose presence in this map is to be tested
-	 * @return {@code true} if this map maps one or more keys to the
-	 *         specified value
-	 * @throws NullPointerException if the specified value is null
-	 */
-	boolean containsValue(V value);
-
-	/**
-	 * Returns the set of all the keys contained in this map.
-	 * 
-	 * @return the set of all the keys contained in this map
-	 */
-	Set<K> getAllKeys();
-
-	/**
+    
+    /**
+     * Returns {@code true} if this map maps one or more keys to the specified value.
+     *
+     * @param value value whose presence in this map is to be tested
+     * @return {@code true} if this map maps one or more keys to the
+     *         specified value
+     * @throws NullPointerException if the specified value is null
+     */
+    boolean containsValue(V value);
+    
+    /**
+     * Returns the set of all the keys contained in this map.
+     * 
+     * @return the set of all the keys contained in this map
+     */
+    Set<K> getAllKeys();
+    
+    /**
      * Associates the specified value with the specified key in this map.  If the map previously
      * contained a mapping for the key, the old value is replaced by the specified value.
      *

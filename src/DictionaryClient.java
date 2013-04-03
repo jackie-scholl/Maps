@@ -13,9 +13,8 @@ public class DictionaryClient {
     public static void main(String[] args) throws IOException {
         String fileName = "out.txt";
         outStream = new PrintStream(new File(fileName));
-        //System.setOut(new PrintStream(new File(fileName)));
         
-        r = new Random();
+        r = new Random(1176072517698283250L);
         
         long start = System.currentTimeMillis();
         test1();
@@ -84,7 +83,6 @@ public class DictionaryClient {
         assert dict.get("giraffe").equals("animal");
         assert dict.get("orange").equals("fruit");
         assert dict.get("pear").equals("fruit");
-        //check(dict);
     }
     
     private static void test2(int n){
@@ -106,7 +104,6 @@ public class DictionaryClient {
             int x = Math.abs(r.nextInt());
             st.put(x, x+1);
         }
-        //check(st);
         
         Set<Integer> ls = st.getAllKeys();
         
@@ -116,8 +113,6 @@ public class DictionaryClient {
     
     private static void test3() {
         int[] nl = {100, 400, 1600};
-        //int[] nl = {100, 400, 1600, 6400};
-        //int[] nl = {50000, 100000};
         
         double[] factorsA = {5.0};
         double[] marginsA = {0.5};
@@ -156,7 +151,6 @@ public class DictionaryClient {
         }
         
         List<Integer> ls = new ArrayList<Integer>(st.getAllKeys());
-        //assert ls.size() == n: ls.size()+":"+n;
         for(int i=0; i<10; i++){
             Collections.shuffle(ls);
             for(int x : ls)
@@ -194,8 +188,7 @@ public class DictionaryClient {
         assert dict.get("orange").equals("fruit");
         assert dict.get("pear").equals("fruit");
         assert dict.get("mango").equals("thing");
-        assert dict.size() == 5 : dict.size();
-        //check(dict);
+        assert dict.size() == 5;
         
         dict.put("bread", "wheat");
         dict.put("pear", "yummy");
@@ -205,16 +198,14 @@ public class DictionaryClient {
         assert dict.get("orange").equals("fruit");
         assert dict.get("pear").equals("yummy");
         assert dict.get("mango").equals("thing");
-        assert dict.size() == 5;        
-        //check(dict);
+        assert dict.size() == 5;
     }
     
     private static void test5(){
         System.out.println("Test 5 started");
         test5h(new LinkedList<String, String>());
         //test4h(new RedBlackTree<String, String>());
-        //test4h(new HashtableA<String, String>(STMode.rbt));
-        //test5h(new HashtableA<String, String>(new RedBlackTreeSupplier<String, String>()));
+        //test5h(new HashtableA<String, String>(RBTsup));
         test5h(new HashtableA<String, String>(LLsup));
         test5h(new HashtableB<String, String>());
         
@@ -235,7 +226,6 @@ public class DictionaryClient {
         assert dict.get("pear").equals("fruit");
         assert dict.get("mango").equals("thing");
         assert dict.size() == 5;
-        //check(dict);
         
         dict.remove("giraffe");
         dict.remove("mango");
@@ -243,75 +233,53 @@ public class DictionaryClient {
         assert dict.get("bread").equals("starch");
         assert dict.get("orange").equals("fruit");
         assert dict.get("pear").equals("fruit");
-        assert dict.size() == 3;        
-        //check(dict);
+        assert dict.size() == 3;
     }
     
     private static void test6(int REP){
         System.out.printf("Test 6 started\n");
         
-        double[] amounts = {2.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0};
-        int length = amounts.length;
-        double asum = 0.0;
-        for(double x : amounts)
-            asum += x;
+        int n = 500;
         
-        double[] limits = new double[length];
-        double cur = 0.0;
-        for(int i=0; i<length; i++){
-            cur += amounts[i]/asum;
-            limits[i] = cur;
-        }
+        System.out.printf("%nTest 6, n=%d%n", n);
+        System.out.println("LL:     HT-LL:  HT-B:   RBT:    HT-RBT:");
         
-        int[] nl = {500};
+        double[] sums = {0.0, 0.0, 0.0, 0.0, 0.0};
         
-        for(int n : nl){
-            System.out.printf("%nTest 6, n=%d%n", n);
-            System.out.println("LL:     HT-LL:  HT-B:   RBT:    HT-RBT:");
-            
-            double[] sums = {0.0, 0.0, 0.0, 0.0, 0.0};
-            
-            for (int i=1; i<=REP; i++) {
-                for (int j=0; j<5; j++) {
-                    ST<Integer, Integer> st;
-                    
-                    if (j==0)
-                        st = new LinkedList<Integer, Integer>();
-                    else if (j==1)
-                        st = new HashtableA<Integer, Integer>(LLsup);
-                    else if (j==2)
-                        st = new HashtableB<Integer, Integer>();
-                    else if (j==3)
-                        st = new RedBlackTree<Integer, Integer>();
-                    else if (j==4)
-                        st = new HashtableA<Integer, Integer>(RBTsup);
-                    else
-                        throw new RuntimeException("WTF");
-                    
-                    sums[j] += test6h(st, n, limits);
-                }
-                System.out.printf("%5.0f   %5.0f   %5.0f   %5.0f   %5.0f%n", sums[0]/i, sums[1]/i, sums[2]/i, sums[3]/i, sums[4]/i);
+        for (int i=1; i<=REP; i++) {
+            for (int j=0; j<5; j++) {
+                ST<Integer, Integer> st;
+                
+                if (j==0)
+                    st = new LinkedList<Integer, Integer>();
+                else if (j==1)
+                    st = new HashtableA<Integer, Integer>(LLsup);
+                else if (j==2)
+                    st = new HashtableB<Integer, Integer>();
+                else if (j==3)
+                    st = new RedBlackTree<Integer, Integer>();
+                else if (j==4)
+                    st = new HashtableA<Integer, Integer>(RBTsup);
+                else
+                    throw new RuntimeException("WTF");
+                
+                sums[j] += test6h(st, n);
             }
-            System.out.println("LL      HT-LL   HT-B    RBT     HT-RBT ");
+            System.out.printf("%5.0f   %5.0f   %5.0f   %5.0f   %5.0f%n", sums[0]/i, sums[1]/i, sums[2]/i, sums[3]/i, sums[4]/i);
         }
+        System.out.println("LL      HT-LL   HT-B    RBT     HT-RBT ");
         
         System.out.println("Test 6 completed successfully\n");
     }
     
-    private static double test6h(ST<Integer, Integer> st, int n, double[] limits){
+    private static double test6h(ST<Integer, Integer> st, int n){
         final int MAX = 3*n;
-        
-        boolean print = false;
         
         Map<Integer, Integer> map = new HashMap<Integer, Integer>();
         long start = System.nanoTime();
         
         for(int i=0; i<n; i++){
-            double d = r.nextDouble();
-            
-            int c = 0;
-            
-            while (c<limits.length && d<limits[c++]);
+            int c = (int) (r.nextDouble()*6);
             
             if (c==0) { // Get
                 int k = (int) (r.nextDouble()*MAX);
@@ -339,7 +307,7 @@ public class DictionaryClient {
                 boolean x = map.containsKey(k);
                 boolean y = st.containsKey(k);
                 assert x == y;
-            } else if (c==3) {
+            } else if (c==4) {
                 int v = (int) (r.nextDouble()*MAX);
                 boolean x = map.containsValue(v);
                 boolean y = st.containsValue(v);
@@ -349,18 +317,12 @@ public class DictionaryClient {
                 Set<Integer> y = st.getAllKeys();
                 assert x.equals(y);
             } else {
-                //if(print)
-                    System.out.println("? " + c);
+                System.out.println("? " + c);
             }
         }
         
         long end = System.nanoTime();
         double diff = end-start;
-        
-        int x = st.size();
-        int y = map.size();
-        
-        assert x==y: x+" "+y;
         
         return diff/n;
     } 
@@ -485,7 +447,7 @@ public class DictionaryClient {
                     int v = r.nextInt();
                     st.put(k, v);
                 }
-            } else if (c==2){ //add new
+            } else if (c==2) { //add new
                 int k = (int) (r.nextDouble()*5*SIZE);
                 int v = r.nextInt();
                 set.add(k);
@@ -506,7 +468,7 @@ public class DictionaryClient {
         return avg.mean();
     }
     
-    private static void test8(int REP, double... amounts){
+    private static void test8(int REP, double... amounts) {
         int n = 10000;
         double[] limits = getLimits(amounts);
         long startMillis = System.currentTimeMillis();
@@ -524,13 +486,6 @@ public class DictionaryClient {
             {},
             {.95, .15},
             {}
-            /*{.94, .16},
-             {.94, .16},
-             {.93, .17},
-             {.92, .18},
-             {.91, .19},
-             {.90, .20},
-             {}   */
         };
         
         int len = confs.length;
@@ -722,228 +677,8 @@ class StatsList{
     
     public String toString() {
         /*String[] strs = new String[list.size()];
-        for (int i=0; i<list.size(); i++)
-            strs[i] = String.format("%6.2f", list.get(i));*/
+         for (int i=0; i<list.size(); i++)
+         strs[i] = String.format("%6.2f", list.get(i));*/
         return String.format("%6.3f (%6.3f)", mean(), stddevMean());
     }
 }
-/*
- enum STType {
- LL ("LL"), RBT ("RBT"), HT_B ("HT-B"), HT_LL ("HT:LL"), HT_RBT ("HT:RBT"), Mock ("Mock");
- private final String name;
- STType(String str){  name = str; }
- public String toString(){  return name; }
- }*/
-/*
- class Config<K extends Comparable<K>, V> {
- STType type;
- double c1, c2;
- 
- Config(STType t, double config1, double config2){
- type = t;
- c1 = config1;
- c2 = config2;
- }
- 
- Config(STType t){  this(t, -1.0, -1.0); }
- 
- ST<K, V> makeNew() {
- switch (type) {
- case LL:
- return new LinkedList<K, V>();
- case RBT:
- return new RedBlackTree<K, V>();
- case HT_B:
- return new HashtableB<K, V>();
- case HT_LL:
- return new HashtableA<K, V>(new LinkedListSupplier<K, V>());
- case HT_RBT:
- return new HashtableA<K, V>(new RedBlackTreeSupplier<K, V>());
- case Mock:
- return new Mock<K, V>();
- default:
- return new Mock<K, V>();
- }
- }
- public String toString(){
- if(c1 == -1.0 && c2 == -1.0)
- return type.toString();
- else
- return String.format("%s(%d/%d)", type.toString(), (int) (c1*100), (int) (c2*100));
- }
- }*/
-/*
- class MultiStream extends OutputStream {
- private static OutputStream[] outs;
- 
- public MultiStream(OutputStream... outputStreams) {
- outs = outputStreams;
- }
- 
- public void close() throws IOException {
- for(OutputStream out : outs)
- out.close();
- }
- 
- public void write(byte[] b, int off, int len) throws IOException {
- for(OutputStream out : outs)
- out.write(b, off, len);
- }
- 
- public void write(byte[] b) throws IOException {
- for(OutputStream out : outs)
- out.write(b);
- }
- 
- public void write(int b) throws IOException {
- for(OutputStream out : outs)
- out.write(b);
- }
- }*/
-
-
-//System.out.println("80/30/50:  50/30:     60/40/50:  90/20/50:  50/20:   ");
-//System.out.printf("%5.0f   %5.0f   %5.0f   %5.0f   %5.0f   %5.0f%n", sums[0]/i, sums[1]/i, sums[2]/i, sums[3]/i, sums[4]/i, sums[5]/i);
-
-/*
- Object[][] ints = {set.toArray(), map.keySet().toArray(), st.getAll().toArray()};
- 
- for(Object[] arr : ints){
- Arrays.sort(arr);
- //System.out.println(Arrays.toString(arr));
- }
- 
- //System.out.println(Arrays.toString(set.toArray()));
- //System.out.println(Arrays.toString(map.keySet().toArray()));
- //System.out.println(Arrays.toString(st.getAll().toArray()));*/
-
-
-
-//assert x==y && y==z: Arrays.toString(set.toArray())+" "+Arrays.toString(map.keySet().toArray())+" "+Arrays.toString(st.getAll().toArray());
-//assert ((x==y) && (y==z)): set.toString()+" "+map.toString()+" "+st.toString();
-
-
-/*
- mean = 0.0;
- for(int i=0; i<REP; i++)
- mean += test6h(new LinkedList<Integer, Integer>(), n);
- System.out.println(mean/10.0);
- 
- mean = 0.0;
- for(int i=0; i<REP; i++)
- mean += test6h(new HashtableA<Integer, Integer>(STMode.ll), n);
- System.out.println(mean/10.0);
- 
- 
- mean = 0.0;
- for(int i=0; i<REP; i++)
- mean += test6h(new HashtableB<Integer, Integer>(), n);
- System.out.println(mean/10.0);
- */
-
-/* if(i%3 == 0){
- System.out.println();
- 
- for (int j=0; j<5; j++) {
- String s = "ERR";
- if(j==0) s = "Linked List:";
- if(j==1) s = "HashTable(ll):";
- if(j==2) s = "HashTableB:";
- if(j==3) s = "RedBlackTree:";
- if(j==4) s = "HashTable(rbt):";
- 
- System.out.printf("%-17s %5.0f %n", s, sums[j]/REP);
- }
- 
- System.out.println();
- }
- 
- ,
- {.50, .10, .30},
- {.20, .50},
- {.10, .80},
- {.03, .80}
- 
- 
- */
-/*if(conf.length == 2)
- s += String.format("   %2.0f/%2.0f:        ", conf[0]*100, conf[1]*100);
- if(conf.length == 3)
- s += String.format("   %2.0f/%2.0f/%2.0f:     ", conf[0]*100, conf[1]*100, conf[2]*100);*/
-
-
-/*ST<Integer, Integer> st;
- * 
- if (j==confs.length)
- st = new Mock<Integer, Integer>();
- else{
- double[] conf = confs[j];
- if(conf.length == 2)
- st = new HashtableB<Integer, Integer>(conf[0], conf[1]);
- else if(conf.length == 3)
- st = new HashtableB<Integer, Integer>(conf[0], conf[1], conf[2]);
- else
- throw new RuntimeException("WTF");
- }*/
-
-//System.out.printf("    (%4.2f%%)%n", avgDiff.mean()*100.0);
-/*
- else if (c==7) {
- assert map.keySet().equals(st.getAllKeys());
- /*Object[][] ints = {map.keySet().toArray(), st.getAllKeys().toArray()};
- 
- for(Object[] arr : ints)
- Arrays.sort(arr);
- 
- for(int j=0; j<map.size(); j++){
- Object x = ints[0][j];
- Object y = ints[1][j];
- assert x.equals(y): String.format("%s : %s", x.toString(), y.toString());
- }*
- 
- if(print)
- System.out.println("Getall!");
- } */
-/*for(Config<Integer, Integer> conf : confs){
- System.out.printf("%-9s", conf.toString());
- }
- System.out.println();
- //System.out.println("LL:      HT-LL:  HT-B:   RBT:    HT-RBT:");*/
-/*
- double[] sums = new double[confs.length];
- 
- for (int i=1; i<=REP; i++) {
- for (int j=0; j<confs.length; j++) {
- ST<Integer, Integer> st;
- st = confs[j].makeNew();
- 
- /*
- if (j==0)
- st = new LinkedList<Integer, Integer>();
- else if (j==1)
- st = new HashtableA<Integer, Integer>(STMode.ll);
- else if (j==2)
- st = new HashtableB<Integer, Integer>();
- else if (j==3)
- st = new RedBlackTree<Integer, Integer>();
- else if (j==4)
- st = new HashtableA<Integer, Integer>(STMode.rbt);
- else if (j==5)
- st = new Mock<Integer, Integer>();
- else
- throw new RuntimeException("WTF");
- 
- sums[j] += test7h(st, n, limits);
- }
- if(i%25 == 0){
- for(int j=0; j<confs.length; j++)
- System.out.printf("%5.2f   ", (sums[j])/i);
- System.out.println();
- }
- }
- for(Config<Integer, Integer> conf : confs){
- System.out.printf("%-9s", conf.toString());
- }
- System.out.println();
- //System.out.println("LL       HT-LL   HT-B    RBT     HT-RBT");
- * */

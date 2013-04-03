@@ -205,7 +205,7 @@ public class HashtableA<K extends Comparable<K>, V> implements ST<K, V>  {
     }
 }
 
-class HashtableASupplier implements STSupplier{
+class HashtableASupplier implements STSupplier {
     private final int cap;
     private final double max;
     private final double min;
@@ -242,11 +242,11 @@ class HashtableASupplier implements STSupplier{
     public HashtableASupplier(STSupplier delegateSupplier){
         this(delegateSupplier, HashtableA.DEF_MAX, HashtableA.DEF_MIN);
     }
-   
+    
     public HashtableASupplier(double maximum, double minimum){
         this(HashtableA.DEF_SUPPLIER, maximum, minimum);
     }
-     
+    
     public HashtableASupplier(){
         this(HashtableA.DEF_SUPPLIER);
     }
