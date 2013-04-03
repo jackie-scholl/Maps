@@ -262,6 +262,10 @@ class HashtableASupplier implements STSupplier {
         //else
         //return String.format("HT-B(%d/%d/%d)", (int) (max*100), (int) (min*100), (int) (set*100));
     }
+    
+    public boolean canDelete() {
+        return true;
+    }
 }
 
 /*
