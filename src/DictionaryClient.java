@@ -421,7 +421,7 @@ public class DictionaryClient {
             
             // If deletes are on and delete is chosen, decide whether to delete or put new
             // based on difference from intended size.
-            if(c==3){
+            if (c==3) {
                 double ratio = (set.size()/SIZE)/2;
                 if(r.nextDouble()<ratio)
                     c = 3;
@@ -438,7 +438,7 @@ public class DictionaryClient {
                     assert set.contains(rn);
                     st.get(rn);
                 }
-            }else if (c==1) { //change existing
+            } else if (c==1) { //change existing
                 if(set.size() > 0){
                     Integer k;
                     do
