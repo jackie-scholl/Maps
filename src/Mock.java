@@ -27,8 +27,4 @@ class MockSupplier implements STSupplier {
     public String toString() {
         return "Mock";
     }
-    
-    public boolean canDelete() {
-        return false;
-    }
 }

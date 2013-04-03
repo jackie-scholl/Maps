@@ -159,8 +159,4 @@ class LinkedListSupplier implements STSupplier {
     public String toString() {
         return "LL";
     }
-    
-    public boolean canDelete() {
-        return true;
-    }
 }

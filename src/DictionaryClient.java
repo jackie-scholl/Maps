@@ -346,28 +346,15 @@ public class DictionaryClient {
     private static double test7h(ST<Integer, Integer> st, int n, double[] limits){
         final int MAX = (int) (1.5*SIZE);
         
-        Average avg = new Average();
-        
         TreeSet<Integer> set = new TreeSet<Integer>(st.getAllKeys());
+        long start = System.nanoTime();
         
         for(int i=0; i<n; i++){
-            long start = System.nanoTime();
-            
             double d = r.nextDouble();
             int c;
             for(c=0; c<limits.length; c++)
                 if(d < limits[c])
                 break;
-            
-            // If deletes are on and delete is chosen, decide whether to delete or put new
-            // based on difference from intended size.
-            /*if (c==3) {
-                double ratio = (set.size()/SIZE)/2;
-                if(r.nextDouble()<ratio)
-                    c = 3;
-                else
-                    c = 2;
-            }*/
             
             if (c==0) { // Get
                 if(set.size() > 0){
@@ -380,17 +367,11 @@ public class DictionaryClient {
                 st.put(k, v);
             } else if (c==2) { //delete
                 Integer k = (int) (r.nextDouble()*MAX);
-                assert k != null;
-                /*do
-                    k = (int) (r.nextDouble()*MAX);
-                while (!set.contains(k));
-                    set.remove(k);*/
                 st.remove(k);
             }
-            long end = System.nanoTime();
-            avg.add(end-start);
         }
-        return avg.mean();
+        long end = System.nanoTime();
+        return ((double) (end-start))/n;
     }
     
     private static void test8(int REP, double... amounts) {
@@ -607,3 +588,4 @@ class StatsList{
         return String.format("%6.3f (%6.3f)", mean(), stddevMean());
     }
 }
+//610+270+444+167+35+207+99+25

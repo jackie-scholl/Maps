@@ -14,12 +14,5 @@ public interface STSupplier {
      * @return new symbol table
      */
     <K extends Comparable<K>, V> ST<K, V> getNew();
-    
-    /**
-     * Returns whether or not this supplier makes symbol tables that support the {@code delete} operation.
-     * 
-     * @return whether or not the symbol tables can delete.
-     */
-    boolean canDelete();
 }
 

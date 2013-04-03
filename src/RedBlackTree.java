@@ -199,8 +199,4 @@ class RedBlackTreeSupplier implements STSupplier {
     public String toString() {
         return "RBT";
     }
-    
-    public boolean canDelete() {
-        return false;
-    }
 }

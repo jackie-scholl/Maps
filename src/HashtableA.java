@@ -262,8 +262,4 @@ class HashtableASupplier implements STSupplier {
     public String toString() {
         return String.format("HT:%s", supplier.toString());
     }
-    
-    public boolean canDelete() {
-        return true;
-    }
 }
