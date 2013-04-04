@@ -20,6 +20,10 @@ import java.util.*;
  * @param <V> The value type
  */
 public class ProbingHashtable<K extends Comparable<K>, V> implements ST<K, V> {
+    final static double DEF_MAX = 0.75;
+    final static double DEF_MIN = 0.25;
+    final static double DEF_SET = 0.5;
+	
     private static final int MIN_CAPACITY = 11; // The minimum size of the array; when smaller than this, no down-sizing will occur.
     
     private Pair<K, V>[] array; // The array holding all the key/value pairs
@@ -73,7 +77,7 @@ public class ProbingHashtable<K extends Comparable<K>, V> implements ST<K, V> {
      *     or {@code maximum} is greater than one.
      */
     public ProbingHashtable(double maximum, double minimum) throws IllegalArgumentException {
-        this(maximum, minimum, 0.5);
+        this(maximum, minimum, DEF_SET);
     }
     
     /**
@@ -81,7 +85,7 @@ public class ProbingHashtable<K extends Comparable<K>, V> implements ST<K, V> {
      * 
      */
     public ProbingHashtable() {
-        this(0.75, 0.25);
+        this(DEF_MAX, DEF_MIN);
     }
     
     /**
@@ -294,8 +298,13 @@ public class ProbingHashtable<K extends Comparable<K>, V> implements ST<K, V> {
         this.capacity = newCapacity;
     }
     
-    public String toString(){
-        return String.format("Hashtable(%.2f, %.2f, %.2f)", maxFullness, minFullness, setFullness);
+    public String toString() {
+    	if (setFullness == DEF_SET && maxFullness == DEF_MAX && minFullness == DEF_MIN)
+    		return String.format("Probing Hashtable");
+    	else if (setFullness == DEF_SET)
+    		return String.format("Probing Hashtable (%.2f, %.2f)", maxFullness, minFullness);
+    	else
+    		return String.format("Probing Hashtable (%.2f, %.2f, %.2f)", maxFullness, minFullness, setFullness);
     }
     
     /* (non-Javadoc)
@@ -419,11 +428,11 @@ class ProbingHashtableSupplier implements STSupplier {
     }
     
     public ProbingHashtableSupplier(double maximum, double minimum){
-        this(maximum, minimum, 0.5);
+        this(maximum, minimum, ProbingHashtable.DEF_SET);
     }
     
     public ProbingHashtableSupplier(){
-        this(0.75, 0.30);
+        this(ProbingHashtable.DEF_MAX, ProbingHashtable.DEF_MIN);
     }
     
     public <K extends Comparable<K>, V> ST<K, V> getNew() {
@@ -431,11 +440,11 @@ class ProbingHashtableSupplier implements STSupplier {
     }
     
     public String toString() {
-    	if(max == 0.75 && min == 0.30 && set == 0.5)
-    		return "HT-B";
+    	if(max == ProbingHashtable.DEF_MAX && min == ProbingHashtable.DEF_MIN && set == ProbingHashtable.DEF_SET)
+    		return "HT-P";
     	else if(set == 0.5)
-            return String.format("HT-B(%d/%d)", (int) (max*100), (int) (min*100));
+            return String.format("HT-P(%d/%d)", (int) (max*100), (int) (min*100));
         else
-            return String.format("HT-B(%d/%d/%d)", (int) (max*100), (int) (min*100), (int) (set*100));
+            return String.format("HT-P(%d/%d/%d)", (int) (max*100), (int) (min*100), (int) (set*100));
     }
 }

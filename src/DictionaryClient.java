@@ -43,12 +43,6 @@ public class DictionaryClient {
             //test7(1000, 10, 3, 1, 0);
             //test7(10000, 10, 3, 1, 0);
             //test7(100000, 10, 3, 1, 0);
-            
-            test8(5, 10, 3, 2);
-            //test8(100, 10, 3, 0, 2);
-            //test8(250, 10, 3, 0, 2);
-            //test8(1000, 10, 3, 0, 2);
-            //test8(5000, 10, 3, 1, 0.5);
         }
         
         long end = System.currentTimeMillis();
@@ -319,97 +313,6 @@ public class DictionaryClient {
         long end = System.nanoTime();
         return ((double) (end-start))/n;
     }
-    
-    private static void test8(int REP, double... amounts) {
-        int n = 10000;
-        double[] limits = getLimits(amounts);
-        long startMillis = System.currentTimeMillis();
-        
-        System.out.printf("Test 8 started; n=%d, rep=%d%n", n, REP);
-        
-        double[][] confs = {
-            {.65, .38},
-            {},
-            {.70, .36},
-            {},
-            {.80, .30},
-            {},
-            {.90, .27},
-            {},
-            {.95, .15},
-            {}
-        };
-        
-        int len = confs.length;
-        
-        String s = "";
-        for(double[] conf : confs){
-            String temp = "";
-            if(conf.length == 0){
-                temp = "Mock";
-            } else {
-                for(double x : conf)
-                    temp += String.format("%2.0f/", x*100);
-                temp = temp.replaceAll("/\\z", ":");
-            }
-            s += String.format("  %-13s", temp);
-        }
-        System.out.println(s);
-        
-        StatsList[] lists = new StatsList[len];
-        
-        for(int i=0; i<len; i++)
-            lists[i] = new StatsList();
-        
-        @SuppressWarnings("unchecked")
-        ST<Integer, Integer>[] sts = (ST<Integer, Integer>[]) new ST[len];
-        for (int j=0; j<len; j++) {
-            double[] conf = confs[j];
-            if(conf.length == 0)
-                sts[j] = new Mock<Integer, Integer>();
-            else if(conf.length == 2)
-                sts[j] = new ProbingHashtable<Integer, Integer>(conf[0], conf[1]);
-            else
-                throw new RuntimeException("WTF");
-        }
-        
-        for (int i=1; i<=REP; i++) {
-            for (int j=0; j<len; j++) {
-                double mean = test7h(sts[j], n, limits);
-                lists[j].add(mean);
-            }
-            
-            if (i%(REP/100+1) == 0) {
-                for(int j=0; j<len; j++){
-                    StatsList l = lists[j];
-                    System.out.printf("%6.2f (%5.3g) ", l.mean(), l.stddevMean());
-                }
-                System.out.println();
-            }
-        }
-        System.out.println(s);
-        
-        System.out.println();
-        for (int j=0; j<len; j++) {
-            double[] conf = confs[j];
-            String temp = "";
-            if (conf.length == 0) {
-                temp = "Mock";
-            } else {
-                for (double x : conf)
-                    temp += String.format("%2.0f/", x*100);
-                temp = temp.replaceAll("/\\z", ":");
-            }
-            
-            for (int i=0; i<3; i++)
-                lists[j].remove(0);
-            
-            System.out.printf("%-6s %s%n", temp, lists[j]);
-        }
-        
-        long diff = System.currentTimeMillis()-startMillis;
-        System.out.printf("%nTest 8 completed successfully in %.3f seconds%n", diff/1000.0);
-    }
 }
 
 class StatsList{
@@ -610,4 +513,115 @@ private static void test1() {
         
         
     	//System.out.printf("Test #1, %s%n", dict.toString());
-*/
+ 
+ 
+    		if (maxFullness == DEF_MAX && minFullness == DEF_MIN) {
+    			return String.format("Probing Hashtable");
+    		} else {
+    			return String.format("Probing Hashtable (%.2f, %.2f)", maxFullness, minFullness);
+    		}
+    	} else
+    		return String.format("Probing Hashtable (%.2f, %.2f, %.2f)", maxFullness, minFullness, setFullness);
+    		
+
+    
+    private static void test8(int REP, double... amounts) {
+        int n = 10000;
+        double[] limits = getLimits(amounts);
+        long startMillis = System.currentTimeMillis();
+        
+        System.out.printf("Test 8 started; n=%d, rep=%d%n", n, REP);
+        
+        double[][] confs = {
+            {.65, .38},
+            {},
+            {.70, .36},
+            {},
+            {.80, .30},
+            {},
+            {.90, .27},
+            {},
+            {.95, .15},
+            {}
+        };
+        
+        int len = confs.length;
+        
+        String s = "";
+        for(double[] conf : confs){
+            String temp = "";
+            if(conf.length == 0){
+                temp = "Mock";
+            } else {
+                for(double x : conf)
+                    temp += String.format("%2.0f/", x*100);
+                temp = temp.replaceAll("/\\z", ":");
+            }
+            s += String.format("  %-13s", temp);
+        }
+        System.out.println(s);
+        
+        StatsList[] lists = new StatsList[len];
+        
+        for(int i=0; i<len; i++)
+            lists[i] = new StatsList();
+        
+        @SuppressWarnings("unchecked")
+        ST<Integer, Integer>[] sts = (ST<Integer, Integer>[]) new ST[len];
+        for (int j=0; j<len; j++) {
+            double[] conf = confs[j];
+            if(conf.length == 0)
+                sts[j] = new Mock<Integer, Integer>();
+            else if(conf.length == 2)
+                sts[j] = new ProbingHashtable<Integer, Integer>(conf[0], conf[1]);
+            else
+                throw new RuntimeException("WTF");
+        }
+        
+        for (int i=1; i<=REP; i++) {
+            for (int j=0; j<len; j++) {
+                double mean = test7h(sts[j], n, limits);
+                lists[j].add(mean);
+            }
+            
+            if (i%(REP/100+1) == 0) {
+                for(int j=0; j<len; j++){
+                    StatsList l = lists[j];
+                    System.out.printf("%6.2f (%5.3g) ", l.mean(), l.stddevMean());
+                }
+                System.out.println();
+            }
+        }
+        System.out.println(s);
+        
+        System.out.println();
+        for (int j=0; j<len; j++) {
+            double[] conf = confs[j];
+            String temp = "";
+            if (conf.length == 0) {
+                temp = "Mock";
+            } else {
+                for (double x : conf)
+                    temp += String.format("%2.0f/", x*100);
+                temp = temp.replaceAll("/\\z", ":");
+            }
+            
+            for (int i=0; i<3; i++)
+                lists[j].remove(0);
+            
+            System.out.printf("%-6s %s%n", temp, lists[j]);
+        }
+        
+        long diff = System.currentTimeMillis()-startMillis;
+        System.out.printf("%nTest 8 completed successfully in %.3f seconds%n", diff/1000.0);
+    }
+            
+            //test8(5, 10, 3, 2);
+            //test8(100, 10, 3, 0, 2);
+            //test8(250, 10, 3, 0, 2);
+            //test8(1000, 10, 3, 0, 2);
+            //test8(5000, 10, 3, 1, 0.5);
+    		
+    		
+ 
+ */

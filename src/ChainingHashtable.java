@@ -10,19 +10,20 @@ import java.util.*;
  * @param <V> The value type
  */
 public class ChainingHashtable<K extends Comparable<K>, V> implements ST<K, V>  {
+	
     final static int DEF_SIZE = 11;
     final static double DEF_MAX = 7.0;
     final static double DEF_MIN = 5.0;
     final static double DEF_SET = 3.0;
     final static STSupplier DEF_SUPPLIER = new LinkedListSupplier();
     
-    private ST<K, V>[] arr;
+    private ST<K, V>[] array;
     private int size;
-    private int cap;
+    private int capacity;
     
-    private final double max;
-    private final double min;
-    private final double set;
+    private final double maxFullness;
+    private final double minFullness;
+    private final double setFullness;
     
     private final STSupplier supplier;
     
@@ -30,37 +31,35 @@ public class ChainingHashtable<K extends Comparable<K>, V> implements ST<K, V>  
     /**
      * Primary constructor.
      * 
-     * @param delegateSupplier 
-     * @param capacity
+     * @param delegateSupplier
      * @param maximum
      * @param minimum
      * @param setFactor
      */
-    public ChainingHashtable(STSupplier delegateSupplier, int capacity, double maximum, double minimum, double setFactor) {
+    public ChainingHashtable(STSupplier delegateSupplier, double maximum, double minimum, double setFactor) {
         supplier = delegateSupplier;
         size = 0;
-        cap = capacity;
-        max = maximum;
-        min = minimum;
-        set = setFactor;
+        capacity = DEF_SIZE;
+        maxFullness = maximum;
+        minFullness = minimum;
+        setFullness = setFactor;
         
         @SuppressWarnings("unchecked")
         ST<K, V>[] a = (ST<K, V>[]) new ST[capacity];
-        arr = a;
+        array = a;
         
-        for(int i=0; i<cap; i++)
-            arr[i] = newST();
+        for(int i=0; i<capacity; i++)
+            array[i] = newST();
     }
     
     /**
      * Constructor.
-     * @param delegateSupplier 
-     * @param capacity
+     * @param delegateSupplier
      * @param factor
      * @param margin
      */
-    public ChainingHashtable(STSupplier delegateSupplier, int capacity, double factor, double margin){
-        this(delegateSupplier, capacity, factor*(1.0+margin), factor/(1.0+margin), factor);
+    public ChainingHashtable(STSupplier delegateSupplier, double factor, double margin){
+        this(delegateSupplier, factor*(1.0+margin), factor/(1.0+margin), factor);
     }
     
     
@@ -69,7 +68,7 @@ public class ChainingHashtable<K extends Comparable<K>, V> implements ST<K, V>  
      * @param delegateSupplier 
      */
     public ChainingHashtable(STSupplier delegateSupplier){
-        this(delegateSupplier, DEF_SIZE, DEF_MAX, DEF_MIN, DEF_SET);
+        this(delegateSupplier, DEF_MAX, DEF_MIN, DEF_SET);
     }
     
     /**
@@ -96,8 +95,8 @@ public class ChainingHashtable<K extends Comparable<K>, V> implements ST<K, V>  
     private ST<K, V> getMap(K key) throws NullPointerException {
         if(key == null)
             throw new NullPointerException("Key is not allowed to be null");
-        int index = hash(key) % cap;
-        return arr[index];
+        int index = hash(key) % capacity;
+        return array[index];
     }
     
     /**
@@ -116,7 +115,7 @@ public class ChainingHashtable<K extends Comparable<K>, V> implements ST<K, V>  
     
     public Set<K> getAllKeys() {
         Set<K> keySet = new HashSet<K>(size);
-        for(ST<K,V> st : arr)
+        for(ST<K,V> st : array)
             if(st != null)
             keySet.addAll(st.getAllKeys());
         return keySet;
@@ -131,7 +130,7 @@ public class ChainingHashtable<K extends Comparable<K>, V> implements ST<K, V>  
     public boolean containsValue(V value) throws NullPointerException {
         if (value == null)
             throw new NullPointerException("Value is not allowed to be null");
-        for(ST<K, V> st : arr)
+        for(ST<K, V> st : array)
             if(st.containsValue(value))
             return true;
         return false;
@@ -181,10 +180,10 @@ public class ChainingHashtable<K extends Comparable<K>, V> implements ST<K, V>  
     }
     
     private void resize(){
-        if(!(size<cap*min && cap>11) && !(size>cap*max))
+        if(!(size<capacity*minFullness && capacity>11) && !(size>capacity*maxFullness))
             return;
         
-        int newcap = (int) (size/set);
+        int newcap = (int) (size/setFullness);
         
         @SuppressWarnings("unchecked")
         ST<K, V>[] a = (ST<K, V>[]) new ST[newcap];
@@ -198,17 +197,23 @@ public class ChainingHashtable<K extends Comparable<K>, V> implements ST<K, V>  
             a[index].put(key, val);
         }
         
-        this.arr = a;
-        this.cap = newcap;
+        this.array = a;
+        this.capacity = newcap;
     }
     
     public String toString(){
-        return String.format("Hashtable(%s, %2.0f, %2.0f, %2.0f)", supplier, max, min, set, size);
+    	if (setFullness == DEF_SET && maxFullness == DEF_MAX && minFullness == DEF_MIN)
+    		return String.format("Chaining Hashtable (%s)", supplier);
+    	else if (setFullness == DEF_SET)
+    		return String.format("Chaining Hashtable (%s, %.0f, %.0f)", supplier, maxFullness, minFullness);
+    	else
+    		return String.format("Chaining Hashtable (%s, %.0f, %.0f, %.0f)", supplier, maxFullness, minFullness, setFullness);
+    	
+    	//return String.format("Hashtable(%s, %2.0f, %2.0f, %2.0f)", supplier, maxFullness, minFullness, setFullness, size);
     }
 }
 
 class ChainingHashtableSupplier implements STSupplier {
-    private final int cap;
     private final double max;
     private final double min;
     private final double set;
@@ -217,24 +222,18 @@ class ChainingHashtableSupplier implements STSupplier {
     /**
      * Constructs empty {@code ChainingHashtable}'s with the specified {@code maximum}, {@code minimum}, and {@code set} fullness ratios
      * 
-     * @param delegateSupplier 
-     * @param capacity
+     * @param delegateSupplier
      * @param  maximum the maximum fullness
      * @param  minimum the minimum fullness
      * @param setFactor 
      * 
      * @see ChainingHashtable
      */
-    public ChainingHashtableSupplier(STSupplier delegateSupplier, int capacity, double maximum, double minimum, double setFactor) {     
+    public ChainingHashtableSupplier(STSupplier delegateSupplier, double maximum, double minimum, double setFactor) {     
         supplier = delegateSupplier;
-        cap = capacity;
         max = maximum;
         min = minimum;
         set = setFactor;
-    }
-    
-    public ChainingHashtableSupplier(STSupplier delegateSupplier, double maximum, double minimum, double setFactor){
-        this(delegateSupplier, ChainingHashtable.DEF_SIZE, maximum, minimum, setFactor);
     }
     
     public ChainingHashtableSupplier(STSupplier delegateSupplier, double maximum, double minimum){
@@ -254,7 +253,7 @@ class ChainingHashtableSupplier implements STSupplier {
     }
     
     public <K extends Comparable<K>, V> ST<K, V> getNew() {
-        return new ChainingHashtable<K, V>(supplier, cap, max, min, set);
+        return new ChainingHashtable<K, V>(supplier, max, min, set);
     }
     
     public String toString() {
