@@ -11,8 +11,17 @@ public class DictionaryClient {
     private static STSupplier LLsup = new LinkedListSupplier();
     
     private static STSupplier[] mainSTSups = new STSupplier[] {
-            LLsup, RBTsup, new ChainingHashtableSupplier(LLsup), new ChainingHashtableSupplier(RBTsup),
-            new ChainingHashtableSupplier(new ProbingHashtableSupplier()), new ProbingHashtableSupplier() };
+            LLsup,
+            RBTsup,
+            new ProbingHashtableSupplier(),
+            new ChainingHashtableSupplier(LLsup),
+            new ChainingHashtableSupplier(RBTsup),
+            new ChainingHashtableSupplier(new ProbingHashtableSupplier()),
+            new ChainingHashtableSupplier(new ChainingHashtableSupplier(LLsup)),
+            new ChainingHashtableSupplier(new ChainingHashtableSupplier(RBTsup)),
+            new ChainingHashtableSupplier(new ChainingHashtableSupplier(new ChainingHashtableSupplier(LLsup))),
+            new ChainingHashtableSupplier(new ChainingHashtableSupplier(new ChainingHashtableSupplier(RBTsup)))
+            };
     
     public static void main(String[] args) throws IOException {
         String fileName = "out.txt";
@@ -410,7 +419,8 @@ class StatsList{
         return String.format("%6.3f (%6.3f)", mean(), stddevMean());
     }
 }
-//509+270+444+167+35+207+99+25
+
+//412+263+450+162+30+202+98+18
 
 /*class Average{
 private double sum;

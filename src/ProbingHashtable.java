@@ -226,8 +226,8 @@ public class ProbingHashtable<K extends Comparable<K>, V> implements ST<K, V> {
      * @throws NullPointerException if the specified map is null
      */
     public void putAll(Map<? extends K, ? extends V> m) throws NullPointerException {
-        for(java.util.Map.Entry<? extends K, ? extends V> e : m.entrySet())
-            put(e.getKey(), e.getValue());
+        for(K k : m.keySet())
+            put(k, m.get(k));
     }
     
     public boolean canRemove() {
@@ -441,10 +441,10 @@ class ProbingHashtableSupplier implements STSupplier {
     
     public String toString() {
     	if(max == ProbingHashtable.DEF_MAX && min == ProbingHashtable.DEF_MIN && set == ProbingHashtable.DEF_SET)
-    		return "HT-P";
+    		return "PHT";
     	else if(set == 0.5)
-            return String.format("HT-P(%d/%d)", (int) (max*100), (int) (min*100));
+            return String.format("PHT(%d/%d)", (int) (max*100), (int) (min*100));
         else
-            return String.format("HT-P(%d/%d/%d)", (int) (max*100), (int) (min*100), (int) (set*100));
+            return String.format("PHT(%d/%d/%d)", (int) (max*100), (int) (min*100), (int) (set*100));
     }
 }
