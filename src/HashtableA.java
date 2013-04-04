@@ -205,7 +205,7 @@ public class HashtableA<K extends Comparable<K>, V> implements ST<K, V>  {
     }
     
     public String toString(){
-        return String.format("Hashtable(%s, %2.0f, %2.0f, %2.0f)", supplier.<K, V>getNew(), max, min, set, size);
+        return String.format("Hashtable(%s, %2.0f, %2.0f, %2.0f)", supplier, max, min, set, size);
     }
 }
 

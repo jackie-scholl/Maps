@@ -408,14 +408,14 @@ class HashtableBSupplier implements STSupplier {
      *
      * @param  maximum the maximum fullness
      * @param  minimum the minimum fullness
-     * @param  set  the fullness when the arrays are resized
+     * @param  setFullness  the fullness when the arrays are resized
      * 
      * @see HashtableB
      */
-    public HashtableBSupplier(double maximum, double minimum, double set){        
+    public HashtableBSupplier(double maximum, double minimum, double setFullness){        
         max = maximum;
         min = minimum;
-        this.set = set;
+        set = setFullness;
     }
     
     public HashtableBSupplier(double maximum, double minimum){
@@ -431,7 +431,9 @@ class HashtableBSupplier implements STSupplier {
     }
     
     public String toString() {
-        if(set == 0.5)
+    	if(max == 0.75 && min == 0.30 && set == 0.5)
+    		return "HT-B";
+    	else if(set == 0.5)
             return String.format("HT-B(%d/%d)", (int) (max*100), (int) (min*100));
         else
             return String.format("HT-B(%d/%d/%d)", (int) (max*100), (int) (min*100), (int) (set*100));

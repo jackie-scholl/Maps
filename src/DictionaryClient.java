@@ -11,10 +11,8 @@ public class DictionaryClient {
     private static STSupplier LLsup = new LinkedListSupplier();
     
     private static STSupplier[] mainSTSups = new STSupplier[] {
-            LLsup, RBTsup, new HashtableASupplier(LLsup), new HashtableASupplier(RBTsup), new HashtableBSupplier() };
-    
-    private static STSupplier[] deletableSTSups = new STSupplier[] {
-            LLsup, new HashtableASupplier(LLsup), new HashtableBSupplier() };
+            LLsup, RBTsup, new HashtableASupplier(LLsup), new HashtableASupplier(RBTsup),
+            new HashtableASupplier(new HashtableBSupplier()), new HashtableBSupplier() };
     
     public static void main(String[] args) throws IOException {
         String fileName = "out.txt";
@@ -205,7 +203,8 @@ public class DictionaryClient {
         
         Map<Integer, Integer> map = new HashMap<Integer, Integer>();
         
-        ST<Integer, Integer> [] sts = (ST<Integer, Integer>[]) new ST[num];
+        @SuppressWarnings("unchecked")
+		ST<Integer, Integer> [] sts = (ST<Integer, Integer>[]) new ST[num];
         for(int i=0; i<num; i++)
             sts[i] = stSups[i].getNew();
         
@@ -466,30 +465,6 @@ public class DictionaryClient {
     }
 }
 
-class Average{
-    private double sum;
-    private int num;
-    
-    public Average(){
-        sum = 0.0;
-        num = 0;
-    }
-    
-    void add(double x){
-        sum += x;
-        num++;
-    }
-    
-    void addAll(double[] xs){
-        for(double x : xs)
-            add(x);
-    }
-    
-    double mean(){
-        return sum/num;
-    }
-}
-
 class StatsList{
     private final List<Double> list;
     
@@ -582,10 +557,31 @@ class StatsList{
     }
     
     public String toString() {
-        /*String[] strs = new String[list.size()];
-         for (int i=0; i<list.size(); i++)
-         strs[i] = String.format("%6.2f", list.get(i));*/
         return String.format("%6.3f (%6.3f)", mean(), stddevMean());
     }
 }
-//610+270+444+167+35+207+99+25
+//563+270+444+167+35+207+99+25
+
+/*class Average{
+private double sum;
+private int num;
+
+public Average(){
+    sum = 0.0;
+    num = 0;
+}
+
+void add(double x){
+    sum += x;
+    num++;
+}
+
+void addAll(double[] xs){
+    for(double x : xs)
+        add(x);
+}
+
+double mean(){
+    return sum/num;
+}
+}*/
