@@ -109,13 +109,18 @@ public class RedBlackTree<K extends Comparable<K>, V> implements ST<K, V>{
         return fix(n);
     }
     
-    public V remove(K key) {
+    public boolean canRemove() {
+	    return false;
+	}
+
+	public V remove(K key) {
         throw new UnsupportedOperationException("Red-black trees do not support deletion; key="+key.toString());
     }
     
-    public boolean canRemove() {
-        return false;
-    }
+    public void clear() {
+		for (K key : getAllKeys())
+			remove(key);
+	}
     
     private Node fix(Node n){
         if(n.l!=null && n.l.l!=null && n.l.col == RED && n.l.l.col == RED) // If left child, left grandchild are red, rotate right.

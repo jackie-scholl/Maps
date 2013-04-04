@@ -3,16 +3,17 @@ import java.util.Set;
 
 class Mock<K extends Comparable<K>, V> implements ST<K, V> {
     public Mock() { }
-    public V get(K key) {  return null; }
+    public int size() {  return -1; }
+	public boolean isEmpty() {  return false; }
+	public V get(K key) {  return null; }
     public boolean containsKey(K key) throws NullPointerException {  return false; }
     public boolean containsValue(V value) {  return false; }
-    public V put(K key, V val) {     return null;    }
     public Set<K> getAllKeys() {  return new HashSet<K>(); }
-    public int size() {  return -1; }
+	public V put(K key, V val) {     return null;    }
     public boolean canRemove() {        return true;    }
     public V remove(K key) {     return null;    }
-    public String toString() {  return "Mock"; }
-    public boolean isEmpty() {  return false; }
+    public void clear() {}
+	public String toString() {  return "Mock"; }
 }
 
 class MockSupplier implements STSupplier {

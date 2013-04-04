@@ -132,6 +132,11 @@ public class LinkedList<K extends Comparable<K>, V> implements ST<K, V> {
         return null;
     }
     
+    public void clear() {
+		for (K key : getAllKeys())
+			remove(key);
+	}
+    
     public String toString(){
         return String.format("Linked List", size);
     }

@@ -9,8 +9,7 @@ import java.util.*;
  * @param <K> The key type
  * @param <V> The value type
  */
-public class ChainingHashtable<K extends Comparable<K>, V> implements ST<K, V>  {
-	
+public class ChainingHashtable<K extends Comparable<K>, V> implements ST<K, V> {
     final static int DEF_SIZE = 11;
     final static double DEF_MAX = 7.0;
     final static double DEF_MIN = 5.0;
@@ -159,6 +158,10 @@ public class ChainingHashtable<K extends Comparable<K>, V> implements ST<K, V>  
         return value;
     }
     
+    public boolean canRemove() {
+        return newST().canRemove();
+    }
+    
     public V remove(K key) throws NullPointerException {
         if(key == null)
             throw new NullPointerException("Key is not allowed to be null");
@@ -171,9 +174,10 @@ public class ChainingHashtable<K extends Comparable<K>, V> implements ST<K, V>  
         return value;
     }
     
-    public boolean canRemove() {
-        return newST().canRemove();
-    }
+    public void clear() {
+		for (K key : getAllKeys())
+			remove(key);
+	}
     
     private ST<K, V> newST(){
         return supplier.<K, V>getNew();
