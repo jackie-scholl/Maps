@@ -14,5 +14,6 @@ public interface STSupplier {
      * @return new symbol table
      */
     <K extends Comparable<K>, V> ST<K, V> getNew();
+    
 }
 

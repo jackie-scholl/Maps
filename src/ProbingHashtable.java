@@ -1,5 +1,5 @@
 /*
- * HashtableB.java
+ * ProbingHashtable.java
  * 
  * Version 1.0
  * 
@@ -19,7 +19,7 @@ import java.util.*;
  * @param <K> The key type
  * @param <V> The value type
  */
-public class HashtableB<K extends Comparable<K>, V> implements ST<K, V> {
+public class ProbingHashtable<K extends Comparable<K>, V> implements ST<K, V> {
     private static final int MIN_CAPACITY = 11; // The minimum size of the array; when smaller than this, no down-sizing will occur.
     
     private Pair<K, V>[] array; // The array holding all the key/value pairs
@@ -42,7 +42,7 @@ public class HashtableB<K extends Comparable<K>, V> implements ST<K, V> {
      *     or {@code maximum} is greater than one.
      */
     @SuppressWarnings("unchecked")
-    public HashtableB(double maximum, double minimum, double set) throws IllegalArgumentException {
+    public ProbingHashtable(double maximum, double minimum, double set) throws IllegalArgumentException {
         if (0 >= minimum)
             throw new IllegalArgumentException("Illegal minimum fullness: " + minimum);
         if (minimum >= set)
@@ -72,7 +72,7 @@ public class HashtableB<K extends Comparable<K>, V> implements ST<K, V> {
      *     or {@code maximum} is less than or equal to the default {@code set}
      *     or {@code maximum} is greater than one.
      */
-    public HashtableB(double maximum, double minimum) throws IllegalArgumentException {
+    public ProbingHashtable(double maximum, double minimum) throws IllegalArgumentException {
         this(maximum, minimum, 0.5);
     }
     
@@ -80,7 +80,7 @@ public class HashtableB<K extends Comparable<K>, V> implements ST<K, V> {
      * Constructs an empty {@code HashtableB} with the default {@code maximum}, {@code minimum}, and {@code set} fullness ratios.
      * 
      */
-    public HashtableB() {
+    public ProbingHashtable() {
         this(0.75, 0.25);
     }
     
@@ -327,9 +327,9 @@ public class HashtableB<K extends Comparable<K>, V> implements ST<K, V> {
             return true;
         if (obj == null)
             return false;
-        if (!(obj instanceof HashtableB))
+        if (!(obj instanceof ProbingHashtable))
             return false;
-        HashtableB<?, ?> other = (HashtableB<?, ?>) obj;
+        ProbingHashtable<?, ?> other = (ProbingHashtable<?, ?>) obj;
         if (!Arrays.equals(this.array, other.array))
             return false;
         if (this.capacity != other.capacity)
@@ -398,7 +398,7 @@ class Pair<K, V>{
     }
 }
 
-class HashtableBSupplier implements STSupplier {
+class ProbingHashtableSupplier implements STSupplier {
     private double max; // determines how full the array can get before resizing occurs; default 1/2
     private double min; // determines how empty the array can get before resizing occurs; default 3/4
     private double set; // determines how full the array should be made when resizing; default 1/4
@@ -410,24 +410,24 @@ class HashtableBSupplier implements STSupplier {
      * @param  minimum the minimum fullness
      * @param  setFullness  the fullness when the arrays are resized
      * 
-     * @see HashtableB
+     * @see ProbingHashtable
      */
-    public HashtableBSupplier(double maximum, double minimum, double setFullness){        
+    public ProbingHashtableSupplier(double maximum, double minimum, double setFullness){        
         max = maximum;
         min = minimum;
         set = setFullness;
     }
     
-    public HashtableBSupplier(double maximum, double minimum){
+    public ProbingHashtableSupplier(double maximum, double minimum){
         this(maximum, minimum, 0.5);
     }
     
-    public HashtableBSupplier(){
+    public ProbingHashtableSupplier(){
         this(0.75, 0.30);
     }
     
     public <K extends Comparable<K>, V> ST<K, V> getNew() {
-        return new HashtableB<K, V>(max, min, set);
+        return new ProbingHashtable<K, V>(max, min, set);
     }
     
     public String toString() {

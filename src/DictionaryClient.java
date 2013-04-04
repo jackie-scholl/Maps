@@ -11,8 +11,8 @@ public class DictionaryClient {
     private static STSupplier LLsup = new LinkedListSupplier();
     
     private static STSupplier[] mainSTSups = new STSupplier[] {
-            LLsup, RBTsup, new HashtableASupplier(LLsup), new HashtableASupplier(RBTsup),
-            new HashtableASupplier(new HashtableBSupplier()), new HashtableBSupplier() };
+            LLsup, RBTsup, new ChainingHashtableSupplier(LLsup), new ChainingHashtableSupplier(RBTsup),
+            new ChainingHashtableSupplier(new ProbingHashtableSupplier()), new ProbingHashtableSupplier() };
     
     public static void main(String[] args) throws IOException {
         String fileName = "out.txt";
@@ -21,13 +21,20 @@ public class DictionaryClient {
         r = new Random(1176072517698283250L);
         
         long start = System.currentTimeMillis();
-        test1();
-        test2();
-        test3();
         
-        test4(100);
-        
-        test6(5);
+        for (STSupplier stSup : mainSTSups) {
+        	System.out.printf("====%s====%n", stSup.getNew().toString());
+            test1h(stSup);
+            test2h(stSup);
+            test3h(stSup);
+            test4h(stSup, 100);
+            
+            for (int i=0; i<5; i++)
+            	test6h(stSup, 500);
+            
+            System.out.println();
+        }
+        System.out.println();
         
         long middle = System.currentTimeMillis();
         if(middle-start<1000){
@@ -63,21 +70,10 @@ public class DictionaryClient {
         return limits;
     }
     
-    private static void test1() {
-        int testNum = 1;
-        System.out.printf("Test %d started%n", testNum);
-        
-        for (STSupplier stSup : mainSTSups) {
-            ST<String, String> st = stSup.getNew();
-            System.out.printf("Test #%d, %s%n", testNum, st.toString());
-            test1h(st);
-        }
-        
-        System.out.printf("Test %d completed successfully%n%n", testNum);
-    }
-    
-    private static void test1h(ST<String, String> dict){
-        dict.put("orange", "fruit");
+    private static void test1h(STSupplier stSup) {
+    	ST<String, String> dict = stSup.getNew();
+    	
+    	dict.put("orange", "fruit");
         dict.put("bread", "starch");
         dict.put("giraffe", "animal");
         dict.put("pear", "fruit");
@@ -86,23 +82,13 @@ public class DictionaryClient {
         assert dict.get("giraffe").equals("animal");
         assert dict.get("orange").equals("fruit");
         assert dict.get("pear").equals("fruit");
+        
+        System.out.printf("Test #1: passed%n");
     }
     
-    private static void test2(){
-        int testNum = 2;
-        System.out.printf("Test %d started%n", testNum);
+    private static void test2h(STSupplier stSup){
+    	ST<String, String> dict = stSup.getNew();
         
-        for (STSupplier stSup : mainSTSups) {
-            ST<String, String> st = stSup.getNew();
-            System.out.printf("Test #%d, %s%n", testNum, st.toString());
-            test2h(st);
-        }
-        
-        System.out.printf("Test %d completed successfully%n%n", testNum);
-    }
-    
-    private static void test2h(ST<String, String> dict){
-        //System.out.printf("Test #2, %s%n", dict.toString());
         dict.put("orange", "fruit");
         dict.put("bread", "starch");
         dict.put("giraffe", "animal");
@@ -125,24 +111,17 @@ public class DictionaryClient {
         assert dict.get("pear").equals("yummy");
         assert dict.get("mango").equals("thing");
         assert dict.size() == 5;
+        
+        System.out.printf("Test #2: passed%n", dict.toString());
     }
     
-    private static void test3(){
-        int testNum = 3;
-        System.out.printf("Test %d started%n", testNum);
-        
-        for (STSupplier stSup : mainSTSups) {
-            ST<String, String> st = stSup.getNew();
-            System.out.printf("Test #%d, %s%n", testNum, st.toString());
-            test3h(st);
-        }
-        
-        System.out.printf("Test %d completed successfully%n%n", testNum);
-    }
-    
-    private static void test3h(ST<String, String> dict) {
-        if (!dict.canRemove())
+    private static void test3h(STSupplier stSup){
+    	ST<String, String> dict = stSup.getNew();
+    	
+        if (!dict.canRemove()){
+        	System.out.printf("Test #3: CAN'T DELETE%n");
             return;
+        }
         dict.put("orange", "fruit");
         dict.put("bread", "starch");
         dict.put("giraffe", "animal");
@@ -163,19 +142,12 @@ public class DictionaryClient {
         assert dict.get("orange").equals("fruit");
         assert dict.get("pear").equals("fruit");
         assert dict.size() == 3;
+        
+        System.out.printf("Test #3: passed%n");
     }
     
-    private static void test4(int n){
-        System.out.printf("Test 4 started with n=%d\n", n);
-        
-        for (STSupplier stSup : mainSTSups)
-            test4h(stSup.<Integer, Integer>getNew(), n);
-        
-        System.out.println("Test 4 completed successfully\n");
-    }
-    
-    private static void test4h(ST<Integer, Integer> st, int n) {
-        System.out.printf("Test #4, %s%n", st.toString());
+    private static void test4h(STSupplier stSup, int n){
+    	ST<Integer, Integer> st = stSup.getNew();
         
         for (int i=0; i<n; i++) {
             int x = Math.abs(r.nextInt());
@@ -184,29 +156,14 @@ public class DictionaryClient {
         
         for (int x : st.getAllKeys())
             assert st.get(x)==x+1;
+        
+        System.out.printf("Test #4, n=%d: passed%n", n);
     }
     
-    private static void test6(int rep){
-        int n = 500;
-        System.out.printf("Test 6 started, n=%d%n", n);
-        
-        for (int i=0; i<rep; i++) {
-            test6h(mainSTSups, n);
-        }
-        
-        System.out.println("Test 6 completed successfully\n");
-    }
-    
-    private static void test6h(STSupplier[] stSups, int n) {
+    private static void test6h(STSupplier stSup, int n) {
         final int MAX = 2*n;
-        int num = stSups.length;
-        
         Map<Integer, Integer> map = new HashMap<Integer, Integer>();
-        
-        @SuppressWarnings("unchecked")
-		ST<Integer, Integer> [] sts = (ST<Integer, Integer>[]) new ST[num];
-        for(int i=0; i<num; i++)
-            sts[i] = stSups[i].getNew();
+		ST<Integer, Integer> st = stSup.getNew();
         
         for(int i=0; i<n; i++){
             int c = (int) (r.nextDouble()*6);
@@ -214,54 +171,44 @@ public class DictionaryClient {
             if (c==0) { // Get
                 int k = (int) (r.nextDouble()*MAX);
                 Integer x = map.get(k);
-                for (ST<Integer, Integer> st : sts) {
                     Integer y = st.get(k);
                     if(x == null)
                         assert y == null;
                     else
                         assert x.equals(y);
-                }
             } else if (c==1) { //put
                 int k = (int) (r.nextDouble()*MAX);
                 int v = (int) (r.nextDouble()*MAX);
                 Integer x = map.put(k, v);
                 
-                for (ST<Integer, Integer> st : sts) {
                     Integer y = st.put(k, v);
                     if(x == null)
                         assert y == null;
                     else
                         assert x.equals(y);
-                }                
             } else if (c==2) { // size, isEmpty
-                for (ST<Integer, Integer> st : sts) {
                     assert map.size() == st.size();
                     assert map.isEmpty() == st.isEmpty();
-                }
             } else if (c==3) {
                 int k = (int) (r.nextDouble()*MAX);
                 boolean x = map.containsKey(k);
-                for (ST<Integer, Integer> st : sts) {
                     boolean y = st.containsKey(k);
                     assert x == y;
-                }
             } else if (c==4) {
                 int v = (int) (r.nextDouble()*MAX);
                 boolean x = map.containsValue(v);
-                for (ST<Integer, Integer> st : sts) {
                     boolean y = st.containsValue(v);
                     assert x == y;
-                }
             } else if (c==5) {
                 Set<Integer> x = map.keySet();
-                for (ST<Integer, Integer> st : sts) {
                     Set<Integer> y = st.getAllKeys();
                     assert x.equals(y);
-                }
             } else {
                 System.out.println("? " + c);
             }
         }
+        
+        System.out.printf("Test #6, n=%d: passed%n", n);
     } 
     
     private static void test7(int REP, double... amounts) {
@@ -274,15 +221,15 @@ public class DictionaryClient {
         STSupplier[] confs = (STSupplier[]) new STSupplier[] {
             new LinkedListSupplier(),
                 new RedBlackTreeSupplier(),
-                new HashtableBSupplier(0.55, 0.45),
-                new HashtableBSupplier(0.60, 0.40),
-                new HashtableBSupplier(0.65, 0.38),
-                new HashtableBSupplier(0.70, 0.36),
-                new HashtableBSupplier(0.80, 0.30),
-                new HashtableBSupplier(0.90, 0.27),
-                new HashtableBSupplier(0.95, 0.15),
-                new HashtableASupplier(LLsup),
-                new HashtableASupplier(RBTsup),
+                new ProbingHashtableSupplier(0.55, 0.45),
+                new ProbingHashtableSupplier(0.60, 0.40),
+                new ProbingHashtableSupplier(0.65, 0.38),
+                new ProbingHashtableSupplier(0.70, 0.36),
+                new ProbingHashtableSupplier(0.80, 0.30),
+                new ProbingHashtableSupplier(0.90, 0.27),
+                new ProbingHashtableSupplier(0.95, 0.15),
+                new ChainingHashtableSupplier(LLsup),
+                new ChainingHashtableSupplier(RBTsup),
                 new MockSupplier()};
         
         int len = confs.length;
@@ -421,7 +368,7 @@ public class DictionaryClient {
             if(conf.length == 0)
                 sts[j] = new Mock<Integer, Integer>();
             else if(conf.length == 2)
-                sts[j] = new HashtableB<Integer, Integer>(conf[0], conf[1]);
+                sts[j] = new ProbingHashtable<Integer, Integer>(conf[0], conf[1]);
             else
                 throw new RuntimeException("WTF");
         }
@@ -560,7 +507,7 @@ class StatsList{
         return String.format("%6.3f (%6.3f)", mean(), stddevMean());
     }
 }
-//563+270+444+167+35+207+99+25
+//509+270+444+167+35+207+99+25
 
 /*class Average{
 private double sum;
@@ -585,3 +532,82 @@ double mean(){
     return sum/num;
 }
 }*/
+
+
+//System.out.printf("Test %d completed successfully%n%n", testNum);
+
+
+
+/*private static void test3(){
+    //int testNum = 3;
+    //System.out.printf("Test %d started%n", testNum);
+    //System.out.printf("Test %d completed successfully%n%n", testNum);
+	//System.out.printf("Test #%d, %s%n", testNum, st.toString());
+	//ST<String, String> st = stSup.getNew();
+    
+	for (STSupplier stSup : mainSTSups) {
+        test3h(stSup);
+    }
+	System.out.println();
+}
+
+private static void test1() {
+        //int testNum = 1;
+        //System.out.printf("Test %d started%n", testNum);
+        //ST<String, String> st = stSup.getNew();
+        
+        for (STSupplier stSup : mainSTSups) {
+            test1h(stSup);
+        }
+        System.out.println();
+    }
+
+    
+    private static void test2(){
+        //int testNum = 2;
+        //System.out.printf("Test %d started%n", testNum);
+        //System.out.printf("Test %d completed successfully%n%n", testNum);
+        //ST<String, String> st = stSup.getNew();
+        //System.out.printf("Test #%d, %s%n", testNum, st.toString());
+        
+        for (STSupplier stSup : mainSTSups) {
+            test2h(stSup);
+        }
+        System.out.println();
+    }
+
+    
+    private static void test4(int n){
+        //System.out.printf("Test 4 started with n=%d\n", n);
+        //System.out.println("Test 4 completed successfully\n");
+        
+        for (STSupplier stSup : mainSTSups)
+            test4h(stSup, n);
+        System.out.println();
+    }
+    
+    private static void test6(int rep){
+        int n = 500;
+        System.out.printf("Test 6 started, n=%d%n", n);
+        
+        for (int i=0; i<rep; i++) {
+        	for(STSupplier stSup : mainSTSups)
+        		test6h(stSup, n);
+        }
+        
+        System.out.println("Test 6 completed successfully\n");
+    }
+
+    	
+        //System.out.printf("Test #4, n=%d, %s%n", n, st.toString());
+        test1();
+        test2();
+        test3();
+        
+        test4(100);
+        
+        test6(5);
+        
+        
+    	//System.out.printf("Test #1, %s%n", dict.toString());
+*/

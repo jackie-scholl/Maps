@@ -1,7 +1,5 @@
 import java.util.*;
 
-enum STMode {rbt, ll};
-
 /**
  * A general-chaining hash table.
  * 
@@ -11,7 +9,7 @@ enum STMode {rbt, ll};
  * @param <K> The key type
  * @param <V> The value type
  */
-public class HashtableA<K extends Comparable<K>, V> implements ST<K, V>  {
+public class ChainingHashtable<K extends Comparable<K>, V> implements ST<K, V>  {
     final static int DEF_SIZE = 11;
     final static double DEF_MAX = 7.0;
     final static double DEF_MIN = 5.0;
@@ -38,7 +36,7 @@ public class HashtableA<K extends Comparable<K>, V> implements ST<K, V>  {
      * @param minimum
      * @param setFactor
      */
-    public HashtableA(STSupplier delegateSupplier, int capacity, double maximum, double minimum, double setFactor) {
+    public ChainingHashtable(STSupplier delegateSupplier, int capacity, double maximum, double minimum, double setFactor) {
         supplier = delegateSupplier;
         size = 0;
         cap = capacity;
@@ -61,7 +59,7 @@ public class HashtableA<K extends Comparable<K>, V> implements ST<K, V>  {
      * @param factor
      * @param margin
      */
-    public HashtableA(STSupplier delegateSupplier, int capacity, double factor, double margin){
+    public ChainingHashtable(STSupplier delegateSupplier, int capacity, double factor, double margin){
         this(delegateSupplier, capacity, factor*(1.0+margin), factor/(1.0+margin), factor);
     }
     
@@ -70,14 +68,14 @@ public class HashtableA<K extends Comparable<K>, V> implements ST<K, V>  {
      * Constructor.
      * @param delegateSupplier 
      */
-    public HashtableA(STSupplier delegateSupplier){
+    public ChainingHashtable(STSupplier delegateSupplier){
         this(delegateSupplier, DEF_SIZE, DEF_MAX, DEF_MIN, DEF_SET);
     }
     
     /**
      * Default constructor.
      */
-    public HashtableA(){
+    public ChainingHashtable(){
         this(DEF_SUPPLIER);
     }
     
@@ -209,7 +207,7 @@ public class HashtableA<K extends Comparable<K>, V> implements ST<K, V>  {
     }
 }
 
-class HashtableASupplier implements STSupplier {
+class ChainingHashtableSupplier implements STSupplier {
     private final int cap;
     private final double max;
     private final double min;
@@ -217,7 +215,7 @@ class HashtableASupplier implements STSupplier {
     private final STSupplier supplier;
     
     /**
-     * Constructs empty {@code HashtableB}'s with the specified {@code maximum}, {@code minimum}, and {@code set} fullness ratios
+     * Constructs empty {@code ChainingHashtable}'s with the specified {@code maximum}, {@code minimum}, and {@code set} fullness ratios
      * 
      * @param delegateSupplier 
      * @param capacity
@@ -225,9 +223,9 @@ class HashtableASupplier implements STSupplier {
      * @param  minimum the minimum fullness
      * @param setFactor 
      * 
-     * @see HashtableA
+     * @see ChainingHashtable
      */
-    public HashtableASupplier(STSupplier delegateSupplier, int capacity, double maximum, double minimum, double setFactor) {     
+    public ChainingHashtableSupplier(STSupplier delegateSupplier, int capacity, double maximum, double minimum, double setFactor) {     
         supplier = delegateSupplier;
         cap = capacity;
         max = maximum;
@@ -235,28 +233,28 @@ class HashtableASupplier implements STSupplier {
         set = setFactor;
     }
     
-    public HashtableASupplier(STSupplier delegateSupplier, double maximum, double minimum, double setFactor){
-        this(delegateSupplier, HashtableA.DEF_SIZE, maximum, minimum, setFactor);
+    public ChainingHashtableSupplier(STSupplier delegateSupplier, double maximum, double minimum, double setFactor){
+        this(delegateSupplier, ChainingHashtable.DEF_SIZE, maximum, minimum, setFactor);
     }
     
-    public HashtableASupplier(STSupplier delegateSupplier, double maximum, double minimum){
-        this(delegateSupplier, maximum, minimum, HashtableA.DEF_SET);
+    public ChainingHashtableSupplier(STSupplier delegateSupplier, double maximum, double minimum){
+        this(delegateSupplier, maximum, minimum, ChainingHashtable.DEF_SET);
     }
     
-    public HashtableASupplier(STSupplier delegateSupplier){
-        this(delegateSupplier, HashtableA.DEF_MAX, HashtableA.DEF_MIN);
+    public ChainingHashtableSupplier(STSupplier delegateSupplier){
+        this(delegateSupplier, ChainingHashtable.DEF_MAX, ChainingHashtable.DEF_MIN);
     }
     
-    public HashtableASupplier(double maximum, double minimum){
-        this(HashtableA.DEF_SUPPLIER, maximum, minimum);
+    public ChainingHashtableSupplier(double maximum, double minimum){
+        this(ChainingHashtable.DEF_SUPPLIER, maximum, minimum);
     }
     
-    public HashtableASupplier(){
-        this(HashtableA.DEF_SUPPLIER);
+    public ChainingHashtableSupplier(){
+        this(ChainingHashtable.DEF_SUPPLIER);
     }
     
     public <K extends Comparable<K>, V> ST<K, V> getNew() {
-        return new HashtableA<K, V>(supplier, cap, max, min, set);
+        return new ChainingHashtable<K, V>(supplier, cap, max, min, set);
     }
     
     public String toString() {
