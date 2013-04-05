@@ -83,8 +83,10 @@ public interface ST<K extends Comparable<K>, V> {
      * <p>The map will not contain a mapping for the specified key once the call returns.
      *
      * @param key key whose mapping is to be removed from the map
-     * @return the value previously associated with {@code key}, or {@code null} if there is none.
-     * @throws NullPointerException if the specified key is null
+     * 
+     * @return the value previously associated with {@code key}, or {@code null} if there was none.
+     * 
+     * @throws NullPointerException if key is null
      * @throws UnsupportedOperationException if the {@code remove} operation is not supported by this map
      */
     V remove(K key) throws NullPointerException, UnsupportedOperationException;

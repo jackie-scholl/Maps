@@ -3,7 +3,7 @@ import java.util.*;
 /**
  * A left-leaning red-black binary search tree implementation.
  * 
- * @author Jackson
+ * @author Jackson    
  *
  * @param <K> The key type
  * @param <V> The value type
@@ -110,17 +110,17 @@ public class RedBlackTree<K extends Comparable<K>, V> implements ST<K, V>{
     }
     
     public boolean canRemove() {
-	    return false;
-	}
+        return false;
+    }
 
-	public V remove(K key) {
+    public V remove(K key) {
         throw new UnsupportedOperationException("Red-black trees do not support deletion; key="+key.toString());
     }
     
     public void clear() {
-		for (K key : getAllKeys())
-			remove(key);
-	}
+        for (K key : getAllKeys())
+            remove(key);
+    }
     
     private Node fix(Node n){
         if(n.l!=null && n.l.l!=null && n.l.col == RED && n.l.l.col == RED) // If left child, left grandchild are red, rotate right.

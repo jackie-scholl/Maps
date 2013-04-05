@@ -77,17 +77,22 @@ public class ChainingHashtable<K extends Comparable<K>, V> implements ST<K, V> {
         this(DEF_SUPPLIER);
     }
     
-    
-    public int size(){
+    /**
+     * {@inheritDoc}
+     */
+    public int size() {
         return size;
     }
     
-    @Override
+    
+    /**
+     * {@inheritDoc}
+     */
     public boolean isEmpty() {
         return size == 0;
     }
     
-    private int hash(K key){
+    private int hash(K key) {
         return Math.abs(key.hashCode());
     }
     
@@ -99,12 +104,8 @@ public class ChainingHashtable<K extends Comparable<K>, V> implements ST<K, V> {
     }
     
     /**
-     * Returns the value that is mapped to the given key.
-     *
-     * @param key the key to locate
-     * @return the value mapped to {@code key} or {@code null} if not found
-     * 
-     * @throws NullPointerException if the specified key is null
+     * {@inheritDoc}
+     * This implementation takes constant time.
      */
     public V get(K key) throws NullPointerException {
         if(key == null)
@@ -112,6 +113,10 @@ public class ChainingHashtable<K extends Comparable<K>, V> implements ST<K, V> {
         return getMap(key).get(key);
     }
     
+    /**
+     * {@inheritDoc}
+     * Warning: This implementation takes linear time. The resulting set is not synchronized to the map.
+     */
     public Set<K> getAllKeys() {
         Set<K> keySet = new HashSet<K>(size);
         for(ST<K,V> st : array)
@@ -120,12 +125,20 @@ public class ChainingHashtable<K extends Comparable<K>, V> implements ST<K, V> {
         return keySet;
     }
     
+    /**
+     * {@inheritDoc}
+     * This implementation takes constant time.
+     */
     public boolean containsKey(K key) throws NullPointerException {
         if (key == null)
             throw new NullPointerException("Key is not allowed to be null");
         return getMap(key).containsKey(key);
     }
     
+    /**
+     * {@inheritDoc}
+     * This implementation takes linear time.
+     */
     public boolean containsValue(V value) throws NullPointerException {
         if (value == null)
             throw new NullPointerException("Value is not allowed to be null");
@@ -135,15 +148,7 @@ public class ChainingHashtable<K extends Comparable<K>, V> implements ST<K, V> {
         return false;
     }
     
-    /**
-     * Associates the specified value with the specified key in this map.  If the map previously
-     * contained a mapping for the key, the old value is replaced by the specified value.
-     *
-     * @param key key with which the specified value is to be associated
-     * @param val value to be associated with the specified key
-     * 
-     * @throws NullPointerException if the specified key or value is null
-     */
+    
     public V put(K key, V val) throws NullPointerException {
         if(key == null)
             throw new NullPointerException("Key is not allowed to be null");
@@ -175,9 +180,9 @@ public class ChainingHashtable<K extends Comparable<K>, V> implements ST<K, V> {
     }
     
     public void clear() {
-		for (K key : getAllKeys())
-			remove(key);
-	}
+  for (K key : getAllKeys())
+   remove(key);
+ }
     
     private ST<K, V> newST(){
         return supplier.<K, V>getNew();
@@ -206,14 +211,14 @@ public class ChainingHashtable<K extends Comparable<K>, V> implements ST<K, V> {
     }
     
     public String toString(){
-    	if (setFullness == DEF_SET && maxFullness == DEF_MAX && minFullness == DEF_MIN)
-    		return String.format("Chaining Hashtable (%s)", supplier);
-    	else if (setFullness == DEF_SET)
-    		return String.format("Chaining Hashtable (%s, %.0f, %.0f)", supplier, maxFullness, minFullness);
-    	else
-    		return String.format("Chaining Hashtable (%s, %.0f, %.0f, %.0f)", supplier, maxFullness, minFullness, setFullness);
-    	
-    	//return String.format("Hashtable(%s, %2.0f, %2.0f, %2.0f)", supplier, maxFullness, minFullness, setFullness, size);
+     if (setFullness == DEF_SET && maxFullness == DEF_MAX && minFullness == DEF_MIN)
+      return String.format("Chaining Hashtable (%s)", supplier);
+     else if (setFullness == DEF_SET)
+      return String.format("Chaining Hashtable (%s, %.0f, %.0f)", supplier, maxFullness, minFullness);
+     else
+      return String.format("Chaining Hashtable (%s, %.0f, %.0f, %.0f)", supplier, maxFullness, minFullness, setFullness);
+     
+     //return String.format("Hashtable(%s, %2.0f, %2.0f, %2.0f)", supplier, maxFullness, minFullness, setFullness, size);
     }
 }
 
@@ -264,3 +269,15 @@ class ChainingHashtableSupplier implements STSupplier {
         return String.format("HT:%s", supplier.toString());
     }
 }
+
+
+    
+    /*
+     * Returns the value that is mapped to the given key.
+     *
+     * @param key the key to locate
+     * @return the value mapped to {@code key} or {@code null} if not found
+     * 
+     * @throws NullPointerException if the specified key is null
+     */
+    
