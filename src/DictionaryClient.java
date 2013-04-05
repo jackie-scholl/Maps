@@ -28,7 +28,7 @@ public class DictionaryClient {
         for (STSupplier stSup : mainSTSups) {
             r = new Random(1176072517698283250L);
             
-            System.out.printf("====%s====%n", stSup.getNew().toString());
+            System.out.printf("====%s====%n", stSup.<String, String>getNew().toString());
             test1h(stSup);
             test2h(stSup);
             test3h(stSup);

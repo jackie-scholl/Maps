@@ -13,13 +13,11 @@ class Mock<K extends Comparable<K>, V> implements ST<K, V> {
     public boolean canRemove() {        return true;    }
     public V remove(K key) {     return null;    }
     public void clear() {}
-    public String toString() {  re    turn "Mock"; }
+    public String toString() {  return "Mock"; }
 }
 
 class MockSupplier implements STSupplier {
-    public MockSupplier(){
-        
-    }
+    public MockSupplier(){}
     
     public <K extends Comparable<K>, V> ST<K, V> getNew() {
         return new Mock<K, V>();
