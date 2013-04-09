@@ -3,8 +3,6 @@
  * Makes symbol tables.
  * 
  * @author Jackson
- *
- * @param <V> Value type of resulting Symbol tables
  */
 public interface STSupplier {
     /**
