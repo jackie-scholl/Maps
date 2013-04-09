@@ -18,6 +18,8 @@ public class DictionaryClient {
         new ChainingHashtableSupplier(RBTsup),
         new ChainingHashtableSupplier(new ProbingHashtableSupplier())
     };
+    
+    public static final boolean VERBOSE = false;
 
     public static void main(String[] args) throws IOException {
         String fileName = "out.txt";
@@ -83,7 +85,8 @@ public class DictionaryClient {
         assert dict.get("orange").equals("fruit");
         assert dict.get("pear").equals("fruit");
 
-        System.out.printf("Test #1: passed%n");
+        if (VERBOSE)
+            System.out.printf("Test #1: passed%n");
     }
 
     private static void test2h(STSupplier stSup){
@@ -112,14 +115,16 @@ public class DictionaryClient {
         assert dict.get("mango").equals("thing");
         assert dict.size() == 5;
 
-        System.out.printf("Test #2: passed%n", dict.toString());
+        if (VERBOSE)
+            System.out.printf("Test #2: passed%n", dict.toString());
     }
 
     private static void test3h(STSupplier stSup){
         ST<String, String> dict = stSup.getNew();
 
         if (!dict.canRemove()){
-            System.out.printf("Test #3: CAN'T DELETE%n");
+            if (VERBOSE)
+                System.out.printf("Test #3: CAN'T DELETE%n");
             return;
         }
         dict.put("orange", "fruit");
@@ -156,7 +161,8 @@ public class DictionaryClient {
         assert dict.size() == 0;
         assert dict.isEmpty();
 
-        System.out.printf("Test #3: passed%n");
+        if (VERBOSE)
+            System.out.printf("Test #3: passed%n");
     }
 
     private static void test4h(STSupplier stSup, int n) {
@@ -173,7 +179,8 @@ public class DictionaryClient {
             assert st.containsValue(x+1);
         }
 
-        System.out.printf("Test #4, n=%d: passed%n", n);
+        if (VERBOSE)
+            System.out.printf("Test #4, n=%d: passed%n", n);
     }
 
     private static void test6h(STSupplier stSup, int n) {
@@ -224,10 +231,17 @@ public class DictionaryClient {
             }
         }
 
-        System.out.printf("Test #6, n=%d: passed%n", n);
+        if (VERBOSE)
+            System.out.printf("Test #6, n=%d: passed%n", n);
     } 
 
     private static void test7(int REP, double... amounts) {
+        int PRINTS;
+        if (VERBOSE)
+            PRINTS = 100;
+        else
+            PRINTS = 5;
+        
         double[] limits = getLimits(amounts);
         int n = 10000;
 
@@ -273,7 +287,7 @@ public class DictionaryClient {
 
             outStream.println();
 
-            if (i%(REP/100+1) == 0) {
+            if (i%(REP/PRINTS+1) == 0) {
                 for (int j=0; j<len; j++) {
                     StatsList l = lists[j];
                     System.out.printf("%6.2f (%5.3g) ", l.mean(), l.stddevMean());

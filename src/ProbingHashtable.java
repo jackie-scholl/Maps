@@ -160,12 +160,12 @@ public class ProbingHashtable<K extends Comparable<K>, V> implements ST<K, V> {
      *         specified value
      * @throws NullPointerException if the specified value is null
      */
-    public boolean containsValue(V val) throws NullPointerException {
-        if (val == null)
+    public boolean containsValue(V value) throws NullPointerException {
+        if (value == null)
             throw new NullPointerException("Value is not allowed to be null");
 
         for (Entry<K, V> p : array) {
-            if(p!=null && val.equals(p.v))
+            if(p!=null && value.equals(p.v))
                 return true;
         }
 

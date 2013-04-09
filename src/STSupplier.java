@@ -4,7 +4,6 @@
  * 
  * @author Jackson
  *
- * @param <K> Key type of resulting symbol tables
  * @param <V> Value type of resulting Symbol tables
  */
 public interface STSupplier {
