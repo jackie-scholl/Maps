@@ -105,3 +105,18 @@ public interface ST<K extends Comparable<K>, V> {
      */
     void clear();
 }
+
+
+/**
+ * Makes symbol tables.
+ * 
+ * @author Jackson
+ */
+interface STSupplier {
+    /**
+     * Returns a new symbol table
+     * 
+     * @return new symbol table
+     */
+    <K extends Comparable<K>, V> ST<K, V> getNew();
+}
