@@ -8,7 +8,7 @@ import java.util.*;
  * @param <K> The key type
  * @param <V> The value type
  */
-public class RedBlackTree<K extends Comparable<K>, V> implements ST<K, V>{
+public class RedBlackTree<K extends Comparable<K>, V> implements Dictionary<K, V>{
     private Node root; // The root node.
     private static final boolean BLACK = false;
     private static final boolean RED = true;
@@ -193,11 +193,11 @@ public class RedBlackTree<K extends Comparable<K>, V> implements ST<K, V>{
     }
 }
 
-class RedBlackTreeSupplier implements STSupplier {
+class RedBlackTreeSupplier implements DictionarySupplier {
     public RedBlackTreeSupplier() {
     }
     
-    public <K extends Comparable<K>, V> ST<K, V> getNew() {
+    public <K extends Comparable<K>, V> Dictionary<K, V> getNew() {
         return new RedBlackTree<K, V>();
     }
     

@@ -19,7 +19,7 @@ import java.util.*;
  * @param <K> The key type
  * @param <V> The value type
  */
-public class ProbingHashtable<K extends Comparable<K>, V> implements ST<K, V> {
+public class ProbingHashtable<K extends Comparable<K>, V> implements Dictionary<K, V> {
     final static double DEF_MAX = 0.75;
     final static double DEF_MIN = 0.25;
     final static double DEF_SET = 0.5;
@@ -422,7 +422,7 @@ public class ProbingHashtable<K extends Comparable<K>, V> implements ST<K, V> {
 
 }
 
-class ProbingHashtableSupplier implements STSupplier {
+class ProbingHashtableSupplier implements DictionarySupplier {
     private double max; // determines how full the array can get before resizing occurs; default 1/2
     private double min; // determines how empty the array can get before resizing occurs; default 3/4
     private double set; // determines how full the array should be made when resizing; default 1/4
@@ -450,7 +450,7 @@ class ProbingHashtableSupplier implements STSupplier {
         this(ProbingHashtable.DEF_MAX, ProbingHashtable.DEF_MIN);
     }
 
-    public <K extends Comparable<K>, V> ST<K, V> getNew() {
+    public <K extends Comparable<K>, V> Dictionary<K, V> getNew() {
         return new ProbingHashtable<K, V>(max, min, set);
     }
 

@@ -1,7 +1,7 @@
 import java.util.HashSet;
 import java.util.Set;
 
-class Mock<K extends Comparable<K>, V> implements ST<K, V> {
+class Mock<K extends Comparable<K>, V> implements Dictionary<K, V> {
     public Mock() { }
     public int size() {  return -1; }
     public boolean isEmpty() {  return false; }
@@ -16,10 +16,10 @@ class Mock<K extends Comparable<K>, V> implements ST<K, V> {
     public String toString() {  return "Mock"; }
 }
 
-class MockSupplier implements STSupplier {
+class MockSupplier implements DictionarySupplier {
     public MockSupplier(){}
     
-    public <K extends Comparable<K>, V> ST<K, V> getNew() {
+    public <K extends Comparable<K>, V> Dictionary<K, V> getNew() {
         return new Mock<K, V>();
     }
     

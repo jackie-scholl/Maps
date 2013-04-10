@@ -9,14 +9,14 @@ import java.util.*;
  * @param <K> The key type
  * @param <V> The value type
  */
-public class ChainingHashtable<K extends Comparable<K>, V> implements ST<K, V> {
+public class ChainingHashtable<K extends Comparable<K>, V> implements Dictionary<K, V> {
     final static int DEF_SIZE = 11;
     final static double DEF_MAX = 7.0;
     final static double DEF_MIN = 5.0;
     final static double DEF_SET = 3.0;
-    final static STSupplier DEF_SUPPLIER = new LinkedListSupplier();
+    final static DictionarySupplier DEF_SUPPLIER = new LinkedListSupplier();
     
-    private ST<K, V>[] array;
+    private Dictionary<K, V>[] array;
     private int size;
     private int capacity;
     
@@ -24,7 +24,7 @@ public class ChainingHashtable<K extends Comparable<K>, V> implements ST<K, V> {
     private final double minFullness;
     private final double setFullness;
     
-    private final STSupplier supplier;
+    private final DictionarySupplier supplier;
     
     
     /**
@@ -35,7 +35,7 @@ public class ChainingHashtable<K extends Comparable<K>, V> implements ST<K, V> {
      * @param minimum
      * @param setFactor
      */
-    public ChainingHashtable(STSupplier delegateSupplier, double maximum, double minimum, double setFactor) {
+    public ChainingHashtable(DictionarySupplier delegateSupplier, double maximum, double minimum, double setFactor) {
         supplier = delegateSupplier;
         size = 0;
         capacity = DEF_SIZE;
@@ -44,11 +44,11 @@ public class ChainingHashtable<K extends Comparable<K>, V> implements ST<K, V> {
         setFullness = setFactor;
         
         @SuppressWarnings("unchecked")
-        ST<K, V>[] a = (ST<K, V>[]) new ST[capacity];
+        Dictionary<K, V>[] a = (Dictionary<K, V>[]) new Dictionary[capacity];
         array = a;
         
         for(int i=0; i<capacity; i++)
-            array[i] = newST();
+            array[i] = newDictionary();
     }
     
     /**
@@ -57,7 +57,7 @@ public class ChainingHashtable<K extends Comparable<K>, V> implements ST<K, V> {
      * @param factor
      * @param margin
      */
-    public ChainingHashtable(STSupplier delegateSupplier, double factor, double margin){
+    public ChainingHashtable(DictionarySupplier delegateSupplier, double factor, double margin){
         this(delegateSupplier, factor*(1.0+margin), factor/(1.0+margin), factor);
     }
     
@@ -66,7 +66,7 @@ public class ChainingHashtable<K extends Comparable<K>, V> implements ST<K, V> {
      * Constructor.
      * @param delegateSupplier 
      */
-    public ChainingHashtable(STSupplier delegateSupplier){
+    public ChainingHashtable(DictionarySupplier delegateSupplier){
         this(delegateSupplier, DEF_MAX, DEF_MIN, DEF_SET);
     }
     
@@ -96,7 +96,7 @@ public class ChainingHashtable<K extends Comparable<K>, V> implements ST<K, V> {
         return Math.abs(key.hashCode());
     }
     
-    private ST<K, V> getMap(K key) throws NullPointerException {
+    private Dictionary<K, V> getMap(K key) throws NullPointerException {
         if(key == null)
             throw new NullPointerException("Key is not allowed to be null");
         int index = hash(key) % capacity;
@@ -119,7 +119,7 @@ public class ChainingHashtable<K extends Comparable<K>, V> implements ST<K, V> {
      */
     public Set<K> getAllKeys() {
         Set<K> keySet = new HashSet<K>(size);
-        for(ST<K,V> st : array)
+        for(Dictionary<K,V> st : array)
             if(st != null)
             keySet.addAll(st.getAllKeys());
         return keySet;
@@ -142,7 +142,7 @@ public class ChainingHashtable<K extends Comparable<K>, V> implements ST<K, V> {
     public boolean containsValue(V value) throws NullPointerException {
         if (value == null)
             throw new NullPointerException("Value is not allowed to be null");
-        for(ST<K, V> st : array)
+        for(Dictionary<K, V> st : array)
             if(st.containsValue(value))
             return true;
         return false;
@@ -164,7 +164,7 @@ public class ChainingHashtable<K extends Comparable<K>, V> implements ST<K, V> {
     }
     
     public boolean canRemove() {
-        return newST().canRemove();
+        return newDictionary().canRemove();
     }
     
     public V remove(K key) throws NullPointerException {
@@ -184,7 +184,7 @@ public class ChainingHashtable<K extends Comparable<K>, V> implements ST<K, V> {
    remove(key);
  }
     
-    private ST<K, V> newST(){
+    private Dictionary<K, V> newDictionary(){
         return supplier.<K, V>getNew();
     }
     
@@ -195,10 +195,10 @@ public class ChainingHashtable<K extends Comparable<K>, V> implements ST<K, V> {
         int newcap = (int) (size/setFullness);
         
         @SuppressWarnings("unchecked")
-        ST<K, V>[] a = (ST<K, V>[]) new ST[newcap];
+        Dictionary<K, V>[] a = (Dictionary<K, V>[]) new Dictionary[newcap];
         
         for(int i=0; i<newcap; i++)
-            a[i] = newST();
+            a[i] = newDictionary();
         
         for(K key : this.getAllKeys()){
             V val = this.get(key);
@@ -222,11 +222,11 @@ public class ChainingHashtable<K extends Comparable<K>, V> implements ST<K, V> {
     }
 }
 
-class ChainingHashtableSupplier implements STSupplier {
+class ChainingHashtableSupplier implements DictionarySupplier {
     private final double max;
     private final double min;
     private final double set;
-    private final STSupplier supplier;
+    private final DictionarySupplier supplier;
     
     /**
      * Constructs empty {@code ChainingHashtable}'s with the specified {@code maximum}, {@code minimum}, and {@code set} fullness ratios
@@ -238,18 +238,18 @@ class ChainingHashtableSupplier implements STSupplier {
      * 
      * @see ChainingHashtable
      */
-    public ChainingHashtableSupplier(STSupplier delegateSupplier, double maximum, double minimum, double setFactor) {     
+    public ChainingHashtableSupplier(DictionarySupplier delegateSupplier, double maximum, double minimum, double setFactor) {     
         supplier = delegateSupplier;
         max = maximum;
         min = minimum;
         set = setFactor;
     }
     
-    public ChainingHashtableSupplier(STSupplier delegateSupplier, double maximum, double minimum){
+    public ChainingHashtableSupplier(DictionarySupplier delegateSupplier, double maximum, double minimum){
         this(delegateSupplier, maximum, minimum, ChainingHashtable.DEF_SET);
     }
     
-    public ChainingHashtableSupplier(STSupplier delegateSupplier){
+    public ChainingHashtableSupplier(DictionarySupplier delegateSupplier){
         this(delegateSupplier, ChainingHashtable.DEF_MAX, ChainingHashtable.DEF_MIN);
     }
     
@@ -261,7 +261,7 @@ class ChainingHashtableSupplier implements STSupplier {
         this(ChainingHashtable.DEF_SUPPLIER);
     }
     
-    public <K extends Comparable<K>, V> ST<K, V> getNew() {
+    public <K extends Comparable<K>, V> Dictionary<K, V> getNew() {
         return new ChainingHashtable<K, V>(supplier, max, min, set);
     }
     
@@ -269,15 +269,4 @@ class ChainingHashtableSupplier implements STSupplier {
         return String.format("HT:%s", supplier.toString());
     }
 }
-
-
-    
-    /*
-     * Returns the value that is mapped to the given key.
-     *
-     * @param key the key to locate
-     * @return the value mapped to {@code key} or {@code null} if not found
-     * 
-     * @throws NullPointerException if the specified key is null
-     */
     
