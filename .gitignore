@@ -1,3 +1,5 @@
 *.class
 *.java~
 out.txt
+bin/
+doc/
