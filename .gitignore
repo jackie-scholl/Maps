@@ -1,3 +1,4 @@
 *.class
 *.java~
 out.txt
+*.DS_Store
