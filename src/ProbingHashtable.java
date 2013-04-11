@@ -160,12 +160,12 @@ public class ProbingHashtable<K extends Comparable<K>, V> implements ST<K, V> {
 	 *         specified value
 	 * @throws NullPointerException if the specified value is null
 	 */
-	public boolean containsValue(V val) throws NullPointerException {
-		if (val == null)
+	public boolean containsValue(V value) throws NullPointerException {
+		if (value == null)
 			throw new NullPointerException("Value is not allowed to be null");
 
 		for (Entry<K, V> p : array) {
-			if(p!=null && val.equals(p.v))
+			if(p!=null && value.equals(p.v))
 				return true;
 		}
 
@@ -190,27 +190,27 @@ public class ProbingHashtable<K extends Comparable<K>, V> implements ST<K, V> {
 	 * contained a mapping for the key, the old value is replaced by the specified value.
 	 *
 	 * @param key key with which the specified value is to be associated
-	 * @param val value to be associated with the specified key
+	 * @param value value to be associated with the specified key
 	 * 
 	 * @throws NullPointerException if the specified key or value is null
 	 */
-	public V put(K key, V val) throws NullPointerException {
+	public V put(K key, V value) throws NullPointerException {
 		if (key == null)
 			throw new NullPointerException("Key is not allowed to be null");
-		if (val == null)
+		if (value == null)
 			throw new NullPointerException("Value is not allowed to be null");
 
 		int i = getIndex(key);
 
 		if(array[i] == null){ // If we are putting a new key in, increase the size.
 			size++;
-			array[i] = new Entry<K, V>(key, val);
+			array[i] = new Entry<K, V>(key, value);
 			resizeIfNeeded(); // If we need to resize, do so.
 			return null;
 		} else {
 			assert key.equals(array[i].k);
 			V previousValue = array[i].v;
-			array[i].v = val;
+			array[i].v = value;
 			return previousValue;
 		}
 
