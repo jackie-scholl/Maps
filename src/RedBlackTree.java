@@ -3,12 +3,12 @@ import java.util.*;
 /**
  * A left-leaning red-black binary search tree implementation.
  * 
- * @author Jackson
+ * @author Jackson    
  *
  * @param <K> The key type
  * @param <V> The value type
  */
-public class RedBlackTree<K extends Comparable<K>, V> implements ST<K, V>{
+public class RedBlackTree<K extends Comparable<K>, V> implements Dictionary<K, V>{
     private Node root; // The root node.
     private static final boolean BLACK = false;
     private static final boolean RED = true;
@@ -110,17 +110,17 @@ public class RedBlackTree<K extends Comparable<K>, V> implements ST<K, V>{
     }
     
     public boolean canRemove() {
-	    return false;
-	}
+        return false;
+    }
 
-	public V remove(K key) {
+    public V remove(K key) {
         throw new UnsupportedOperationException("Red-black trees do not support deletion; key="+key.toString());
     }
     
     public void clear() {
-		for (K key : getAllKeys())
-			remove(key);
-	}
+        for (K key : getAllKeys())
+            remove(key);
+    }
     
     private Node fix(Node n){
         if(n.l!=null && n.l.l!=null && n.l.col == RED && n.l.l.col == RED) // If left child, left grandchild are red, rotate right.
@@ -193,11 +193,11 @@ public class RedBlackTree<K extends Comparable<K>, V> implements ST<K, V>{
     }
 }
 
-class RedBlackTreeSupplier implements STSupplier {
+class RedBlackTreeSupplier implements DictionarySupplier {
     public RedBlackTreeSupplier() {
     }
     
-    public <K extends Comparable<K>, V> ST<K, V> getNew() {
+    public <K extends Comparable<K>, V> Dictionary<K, V> getNew() {
         return new RedBlackTree<K, V>();
     }
     

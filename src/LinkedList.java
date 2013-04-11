@@ -9,7 +9,7 @@ import java.util.*;
  * @param <K> The key type
  * @param <V> The value type
  */
-public class LinkedList<K extends Comparable<K>, V> implements ST<K, V> {
+public class LinkedList<K extends Comparable<K>, V> implements Dictionary<K, V> {
     private Node head;
     private int size;
     
@@ -152,12 +152,12 @@ public class LinkedList<K extends Comparable<K>, V> implements ST<K, V> {
     }
 }
 
-class LinkedListSupplier implements STSupplier {
+class LinkedListSupplier implements DictionarySupplier {
     public LinkedListSupplier(){
         
     }
     
-    public <K extends Comparable<K>, V> ST<K, V> getNew() {
+    public <K extends Comparable<K>, V> Dictionary<K, V> getNew() {
         return new LinkedList<K, V>();
     }
     

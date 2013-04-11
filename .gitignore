@@ -2,3 +2,6 @@
 *.java~
 out.txt
 *.DS_Store
+bin/
+doc/
+bin/DS_Store

@@ -1,5 +1,5 @@
 /*
- * ST.java
+ * Dictionary.java
  * 
  * Copyright (c) 2013 Jackson Scholl
  */
@@ -13,7 +13,7 @@ import java.util.*;
  * @param <V> Value type
  * 
  */
-public interface ST<K extends Comparable<K>, V> {
+public interface Dictionary<K extends Comparable<K>, V> {
     /**
      * Returns the current number of key-value mappings.
      * 
@@ -83,16 +83,18 @@ public interface ST<K extends Comparable<K>, V> {
      * <p>The map will not contain a mapping for the specified key once the call returns.
      *
      * @param key key whose mapping is to be removed from the map
-     * @return the value previously associated with {@code key}, or {@code null} if there is none.
-     * @throws NullPointerException if the specified key is null
+     * 
+     * @return the value previously associated with {@code key}, or {@code null} if there was none.
+     * 
+     * @throws NullPointerException if key is null
      * @throws UnsupportedOperationException if the {@code remove} operation is not supported by this map
      */
     V remove(K key) throws NullPointerException, UnsupportedOperationException;
     
     /**
-     * Returns whether or not this symbol table supports the {@code remove} operation.
+     * Returns whether or not this dictionary supports the {@code remove} operation.
      * 
-     * @return whether or not the symbol table can remove
+     * @return whether or not the dictionary can remove
      */
     boolean canRemove();
     
@@ -102,4 +104,19 @@ public interface ST<K extends Comparable<K>, V> {
      * 
      */
     void clear();
+}
+
+
+/**
+ * Makes dictionaries.
+ * 
+ * @author Jackson
+ */
+interface DictionarySupplier {
+    /**
+     * Returns a new dictionary
+     * 
+     * @return new dictionary
+     */
+    <K extends Comparable<K>, V> Dictionary<K, V> getNew();
 }
