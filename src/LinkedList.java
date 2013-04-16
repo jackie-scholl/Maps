@@ -1,11 +1,12 @@
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * A linked list implementation.
  * 
  * @version 2013-03-19
  * @author Jackson Scholl
- *
+ * 
  * @param <K> The key type
  * @param <V> The value type
  */
@@ -17,12 +18,12 @@ public class LinkedList<K extends Comparable<K>, V> implements Dictionary<K, V> 
      * Makes a new linked list.
      * 
      */
-    public LinkedList(){
+    public LinkedList() {
         head = null;
         size = 0;
     }
     
-    public int size(){
+    public int size() {
         return size;
     }
     
@@ -35,8 +36,8 @@ public class LinkedList<K extends Comparable<K>, V> implements Dictionary<K, V> 
             throw new NullPointerException("Key is not allowed to be null");
         
         Node n = head;
-        while(n != null){
-            if(n.key.equals(key))
+        while (n != null) {
+            if (n.key.equals(key))
                 return n.val;
             n = n.next;
         }
@@ -53,18 +54,18 @@ public class LinkedList<K extends Comparable<K>, V> implements Dictionary<K, V> 
         if (value == null)
             throw new NullPointerException("Value is not allowed to be null");
         Node n = head;
-        while(n != null){
-            if(value.equals(n.val))
+        while (n != null) {
+            if (value.equals(n.val))
                 return true;
             n = n.next;
         }
         return false;
     }
     
-    public Set<K> getAllKeys(){
+    public Set<K> getAllKeys() {
         Set<K> keys = new HashSet<K>();
         Node n = head;
-        while(n != null){
+        while (n != null) {
             keys.add(n.key);
             n = n.next;
         }
@@ -76,40 +77,37 @@ public class LinkedList<K extends Comparable<K>, V> implements Dictionary<K, V> 
             throw new NullPointerException("Key is not allowed to be null");
         if (val == null)
             throw new NullPointerException("Value is not allowed to be null");
-        Node toput = new Node(key, val);
-        if(head == null){
-            head = toput;
+        
+        Node toPut = new Node(key, val);
+        if (head == null) {
+            head = toPut;
             size++;
             return null;
         }
         
         Node n = head;
-        while(true){
-            if(n.key.equals(key)){
+        while (true) {
+            if (n.key.equals(key)) {
                 V previousValue = n.val;
                 n.val = val;
                 return previousValue;
             }
-            if(n.next != null)
+            if (n.next != null)
                 n = n.next;
             else
                 break;
         }
         // n is now last node.
-        n.next = toput;
+        n.next = toPut;
         size++;
         return null;
     }
     
-    public boolean canRemove() {
-        return true;
-    }
-    
-    public V remove(K key) throws NullPointerException {
+    public V delete(K key) throws NullPointerException {
         if (key == null)
             throw new NullPointerException("Key is not allowed to be null");
         
-        if(key.equals(head.key)){
+        if (key.equals(head.key)) {
             V value = head.val;
             head = head.next;
             size--;
@@ -118,7 +116,7 @@ public class LinkedList<K extends Comparable<K>, V> implements Dictionary<K, V> 
         
         Node n = head;
         
-        while (n.next!=null && !key.equals(n.next.key)) {
+        while (n.next != null && !key.equals(n.next.key)) {
             n = n.next;
         }
         
@@ -133,19 +131,20 @@ public class LinkedList<K extends Comparable<K>, V> implements Dictionary<K, V> 
     }
     
     public void clear() {
-		for (K key : getAllKeys())
-			remove(key);
-	}
+        for (K key : getAllKeys())
+            delete(key);
+    }
     
-    public String toString(){
+    public String toString() {
         return String.format("Linked List", size);
     }
     
-    class Node{
+    class Node {
         K key;
         V val;
         Node next;
-        public Node(K k, V v){
+        
+        public Node(K k, V v) {
             key = k;
             val = v;
         }
@@ -153,9 +152,7 @@ public class LinkedList<K extends Comparable<K>, V> implements Dictionary<K, V> 
 }
 
 class LinkedListSupplier implements DictionarySupplier {
-    public LinkedListSupplier(){
-        
-    }
+    public LinkedListSupplier() {}
     
     public <K extends Comparable<K>, V> Dictionary<K, V> getNew() {
         return new LinkedList<K, V>();

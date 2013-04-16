@@ -1,23 +1,27 @@
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * A left-leaning red-black binary search tree implementation.
+ * <p>
+ * In editing this, I used [PAPER CITATION - Robert Sedgewick].
  * 
- * @author Jackson    
- *
+ * @author Jackson Scholl
+ * 
  * @param <K> The key type
  * @param <V> The value type
  */
-public class RedBlackTree<K extends Comparable<K>, V> implements Dictionary<K, V>{
-    private Node root; // The root node.
+public class RedBlackTree<K extends Comparable<K>, V> implements Dictionary<K, V> {
     private static final boolean BLACK = false;
     private static final boolean RED = true;
+    
+    private Node root;
     private int size;
     
     /**
      * Makes a new red-black tree.
      */
-    public RedBlackTree(){
+    public RedBlackTree() {
         root = null;
         size = 0;
     }
@@ -30,7 +34,6 @@ public class RedBlackTree<K extends Comparable<K>, V> implements Dictionary<K, V
         return size == 0;
     }
     
-    // Gets the definition of the given word.
     public V get(K key) {
         if (key == null)
             throw new NullPointerException("Key is not allowed to be null");
@@ -38,12 +41,12 @@ public class RedBlackTree<K extends Comparable<K>, V> implements Dictionary<K, V
         return get(root, key);
     }
     
-    private V get(Node n, K key){
-        if(n == null)
+    private V get(Node n, K key) {
+        if (n == null)
             return null;
-        if(key.equals(n.k))
-            return n.v;
-        return get(key.compareTo(n.k)>0? n.l : n.r, key);
+        if (key.equals(n.key))
+            return n.val;
+        return get(key.compareTo(n.key) < 0 ? n.l : n.r, key);
     }
     
     public boolean containsKey(K key) throws NullPointerException {
@@ -61,25 +64,24 @@ public class RedBlackTree<K extends Comparable<K>, V> implements Dictionary<K, V
     }
     
     private boolean containsValue(Node n, V val) {
-        if(n == null)
+        if (n == null)
             return false;
-        return val.equals(n.v) || containsValue(n.l, val) || containsValue(n.r, val);
+        return val.equals(n.val) || containsValue(n.l, val) || containsValue(n.r, val);
     }
     
-    public Set<K> getAllKeys(){
+    public Set<K> getAllKeys() {
         return getAllKeys(root);
     }
     
-    private Set<K> getAllKeys(Node n){
-        if(n==null)
+    private Set<K> getAllKeys(Node n) {
+        if (n == null)
             return new HashSet<K>();
         Set<K> set = getAllKeys(n.l);
-        set.add(n.k);
+        set.add(n.key);
         set.addAll(getAllKeys(n.r));
         return set;
     }
     
-    // Sets the definition of the given word
     public V put(K key, V val) throws NullPointerException {
         if (key == null)
             throw new NullPointerException("Key is not allowed to be null");
@@ -87,115 +89,242 @@ public class RedBlackTree<K extends Comparable<K>, V> implements Dictionary<K, V
             throw new NullPointerException("Value is not allowed to be null");
         
         V previousValue = get(key);
-        if(root == null)
-            root = new Node(key, val);
-        else
-            root = put(root, key, val);
-        root.col = BLACK;
+        
+        root = put(root, key, val);
+        root.color = BLACK;
+        
         return previousValue;
     }
     
-    private Node put(Node n, K key, V val){
-        int c = key.compareTo(n.k);
+    private Node put(Node n, K key, V value) {
+        if (n == null)
+            return new Node(key, value);
         
-        if(c == 0){
-            n.v = val; // If n matches word, just change n's definition
-            //size--;
-        } else if(c > 0)
-            n.l = (n.l==null? new Node(key, val) : put(n.l, key, val)); // If n is greater than word, set n's left to either the new node if n has no left, or the result of putting n in the left node.
-        else if(c < 0)
-            n.r = (n.r==null? new Node(key, val) : put(n.r, key, val)); // If n is less than word, set n's right to either the new node if n has no right, or the result of putting n in the right node.    
+        int cmp = key.compareTo(n.key);
         
-        return fix(n);
+        if (cmp == 0) {
+            n.val = value;
+        } else if (cmp < 0) {
+            n.l = put(n.l, key, value);
+        } else if (cmp > 0) {
+            n.r = put(n.r, key, value);
+        }
+        
+        return fixUp(n);
     }
     
-    public boolean canRemove() {
-        return false;
+    public V delete(K key) {
+        if (key == null)
+            throw new NullPointerException("Key is not allowed to be null");
+        
+        V previousValue = get(key);
+        
+        root = delete(root, key);
+        if (root != null)
+            root.color = BLACK;
+        
+        return previousValue;
     }
-
-    public V remove(K key) {
-        throw new UnsupportedOperationException("Red-black trees do not support deletion; key="+key.toString());
+    
+    /**
+     * Delete the {@code key}, assuming it's a descendant of n.
+     * <p>
+     * Maintains the invariant that n or n's left child is red.
+     * 
+     * @param n
+     * @param key
+     * @return the replacement for {@code n}
+     */
+    private Node delete(Node n, K key) {
+        if (n == null)
+            return null;
+        if (key.compareTo(n.key) < 0) {
+            if (!isRed(n.l) && n.l != null && !isRed(n.l.l)) {
+                n = moveRedLeft(n);
+            }
+            n.l = delete(n.l, key);
+        } else {
+            if (isRed(n.l))
+                n = rotateRight(n);
+            if (key.compareTo(n.key) == 0 && n.r == null) {
+                size--;
+                return null;
+            }
+            if (!isRed(n.r) && !isRed(n.r.l))
+                n = moveRedRight(n);
+            if (key.compareTo(n.key) == 0) {
+                n.val = get(n.r, min(n.r).key);
+                n.key = min(n.r).key;
+                n.r = deleteMin(n.r);
+            } else {
+                n.r = delete(n.r, key);
+            }
+        }
+        n = fixUp(n);
+        return n;
+    }
+    
+    /**
+     * Deletes the minimum in n's tree.
+     * <p>
+     * Maintains the invariant that n or n's left child is red.
+     * 
+     * @param n node to delete minimum of
+     * @return replacement for n
+     */
+    private Node deleteMin(Node n) {
+        if (n.l == null) {
+            size--;
+            return null;
+        }
+        
+        if (!isRed(n.l) && !isRed(n.l.l)) {
+            n = moveRedLeft(n);
+        }
+        
+        n.l = deleteMin(n.l);
+        return fixUp(n);
+    }
+    
+    /**
+     * Kinda confusing. See the example in the paper.
+     * 
+     * @param n node that is red and whose left child and left-left granchild are both black
+     * @return replacement for n
+     */
+    private Node moveRedLeft(Node n) {
+        flipColors(n);
+        if (isRed(n.r.l)) {
+            n.r = rotateRight(n.r);
+            n = rotateLeft(n);
+            flipColors(n);
+        }
+        return n;
+    }
+    
+    /**
+     * Kinda confusing. See the example in the paper.
+     * 
+     * @param n node that is red and whose right child and right-left granchild are both black
+     * @return replacement for n
+     */
+    private Node moveRedRight(Node n) {
+        flipColors(n);
+        if (isRed(n.l.l)) {
+            n = rotateRight(n);
+            flipColors(n);
+        }
+        return n;
+    }
+    
+    /**
+     * Returns the minimum in n's tree.
+     * 
+     * @param n node to find minimum of
+     * @return the minimum node
+     */
+    private Node min(Node n) {
+        if (n == null)
+            return null;
+        Node x = min(n.l);
+        return x == null ? n : x;
+    }
+    
+    /**
+     * Fixes the node as it goes back up the tree on the tail end of {@code put} or {@code delete}.
+     * 
+     * @param n the node to be "fixed"
+     * @return the new n
+     */
+    private Node fixUp(Node n) {
+        if (isRed(n.r))
+            n = rotateLeft(n);
+        if (isRed(n.l) && isRed(n.l.l))
+            n = rotateRight(n);
+        if (isRed(n.l) && isRed(n.r))
+            n = flipColors(n);
+        
+        return n;
+    }
+    
+    /**
+     * Rotate n left, return the new top
+     * 
+     * @param n node to rotate left
+     * @return new node in place of n
+     */
+    private Node rotateLeft(Node n) {
+        Node x = n.r; // x is the new top
+        n.r = x.l;
+        x.l = n;
+        x.color = n.color;
+        n.color = RED;
+        return x;
+    }
+    
+    /**
+     * Rotate n right, return the new top
+     * 
+     * @param n node to rotate right
+     * @return new node in place of n
+     */
+    private Node rotateRight(Node n) {
+        Node x = n.l; // New top
+        n.l = x.r;
+        x.r = n;
+        x.color = n.color;
+        n.color = RED;
+        return x;
+    }
+    
+    /**
+     * Flip the colors on this node and its children.
+     * 
+     * @param n The node whose color will be flipped, along with its children
+     * @return the newly color-flipped node
+     */
+    private Node flipColors(Node n) {
+        n.color = !n.color;
+        n.l.color = !n.l.color;
+        n.r.color = !n.r.color;
+        return n;
+    }
+    
+    private boolean isRed(Node n) {
+        return n != null && n.color == RED;
     }
     
     public void clear() {
         for (K key : getAllKeys())
-            remove(key);
+            delete(key);
     }
     
-    private Node fix(Node n){
-        if(n.l!=null && n.l.l!=null && n.l.col == RED && n.l.l.col == RED) // If left child, left grandchild are red, rotate right.
-            n = rotright(n);
-        if(n.l!=null && n.r!=null && n.l.col == RED && n.r.col == RED) // If both left and right are red, flip colors.
-            n = flipcols(n);
-        if(n.r!=null && n.r.col == RED) // If the right is red, rotate left.
-            n = rotleft(n);
-        return n;
-    }
-    
-    // Rotate n left, return the new top.
-    private Node rotleft(Node n){
-        Node ntop = n.r; // New top
-        assert ntop!=null;
-        swapCols(n, ntop);
-        n.r = (ntop.l==null)? null : ntop.l;
-        ntop.l = n;
-        return ntop;
-    }
-    
-    // Rotate n right, return the new top
-    private Node rotright(Node n){
-        Node ntop = n.l; // New top
-        assert ntop!=null;
-        swapCols(n, ntop);
-        n.l = ntop.r;
-        ntop.r = n;
-        return ntop;
-    }
-    
-    // Swap the colors of nodes a and b.
-    private void swapCols(Node a, Node b){
-        if(a==null || b==null)
-            return;
-        boolean temp = a.col;
-        a.col = b.col;
-        b.col = temp;
-    }
-    
-    // Flip the colors on this node and its children.
-    private Node flipcols(Node n){
-        n.l.col = BLACK;
-        n.r.col = BLACK;
-        n.col = RED;
-        return n;
-    }
-    
-    public String toString(){
-        return String.format("Red-Black Tree", size);
+    public String toString() {
+        return "Red-Black Tree";
     }
     
     class Node {
-        private final K k;
-        private V v;
+        private K key;
+        private V val;
         private Node l;
         private Node r;
-        private boolean col;
+        private boolean color;
         
         public Node(K word, V def) {
-            k = word;
-            v = def;
-            col = RED;
+            key = word;
+            val = def;
+            color = RED;
             size++;
         }
         
-        public String toString(){
-            return k.toString();
+        public String toString() {
+            return String.format("%s (%c)", key.toString(), color == BLACK ? 'B' : 'R');
         }
     }
 }
 
 class RedBlackTreeSupplier implements DictionarySupplier {
-    public RedBlackTreeSupplier() {
-    }
+    public RedBlackTreeSupplier() {}
     
     public <K extends Comparable<K>, V> Dictionary<K, V> getNew() {
         return new RedBlackTree<K, V>();
@@ -205,3 +334,31 @@ class RedBlackTreeSupplier implements DictionarySupplier {
         return "RBT";
     }
 }
+
+/*
+ * public static void main(String[] args) { RedBlackTree<String, String> dict = new RedBlackTree<String, String>();
+ * dict.put("orange", "fruit"); dict.put("bread", "starch"); dict.put("giraffe", "animal"); dict.put("pear", "fruit");
+ * dict.put("mango", "thing"); System.out.println(dict.toString2());
+ * 
+ * dict.deleteMin();
+ * 
+ * System.out.println(dict.toString2());
+ * 
+ * //DictionaryClient.main(new String[]{}); }
+ */
+/*
+ * public boolean checkInvariants() { numBlackLinks(root); checkInvariants(root); return true; }
+ * 
+ * private void checkInvariants(Node n) { if (n == null) return; assert !isRed(n) || !isRed(n.l); // this and left child
+ * can't both be red assert !isRed(n.r); // color of right can't be red checkInvariants(n.l); checkInvariants(n.r); }
+ * 
+ * private int numBlackLinks(Node n) { if (n == null) return 0; int add = (n.color == BLACK) ? 1 : 0; int x =
+ * numBlackLinks(n.l); assert x == numBlackLinks(n.r); return x + add; }
+ * 
+ * public String toString2() { return toString2(root, 0); }
+ * 
+ * private String toString2(Node n, int x) { if (n == null) return "";
+ * 
+ * String s = ""; for (int i = 0; i < x; i++) s += "    "; s += String.format("%s%n", n.toString()); s += toString2(n.l,
+ * x + 1); s += toString2(n.r, x + 1); return s; }
+ */

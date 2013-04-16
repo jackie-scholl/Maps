@@ -3,9 +3,8 @@ import java.util.*;
 /**
  * A general-chaining hash table.
  * 
- * @version 2013-03-19
  * @author Jackson Scholl
- *
+ * 
  * @param <K> The key type
  * @param <V> The value type
  */
@@ -25,7 +24,6 @@ public class ChainingHashtable<K extends Comparable<K>, V> implements Dictionary
     private final double setFullness;
     
     private final DictionarySupplier supplier;
-    
     
     /**
      * Primary constructor.
@@ -47,47 +45,41 @@ public class ChainingHashtable<K extends Comparable<K>, V> implements Dictionary
         Dictionary<K, V>[] a = (Dictionary<K, V>[]) new Dictionary[capacity];
         array = a;
         
-        for(int i=0; i<capacity; i++)
+        for (int i = 0; i < capacity; i++)
             array[i] = newDictionary();
     }
     
     /**
      * Constructor.
+     * 
      * @param delegateSupplier
      * @param factor
      * @param margin
      */
-    public ChainingHashtable(DictionarySupplier delegateSupplier, double factor, double margin){
-        this(delegateSupplier, factor*(1.0+margin), factor/(1.0+margin), factor);
+    public ChainingHashtable(DictionarySupplier delegateSupplier, double factor, double margin) {
+        this(delegateSupplier, factor * (1.0 + margin), factor / (1.0 + margin), factor);
     }
-    
     
     /**
      * Constructor.
-     * @param delegateSupplier 
+     * 
+     * @param delegateSupplier
      */
-    public ChainingHashtable(DictionarySupplier delegateSupplier){
+    public ChainingHashtable(DictionarySupplier delegateSupplier) {
         this(delegateSupplier, DEF_MAX, DEF_MIN, DEF_SET);
     }
     
     /**
      * Default constructor.
      */
-    public ChainingHashtable(){
+    public ChainingHashtable() {
         this(DEF_SUPPLIER);
     }
     
-    /**
-     * {@inheritDoc}
-     */
     public int size() {
         return size;
     }
     
-    
-    /**
-     * {@inheritDoc}
-     */
     public boolean isEmpty() {
         return size == 0;
     }
@@ -97,82 +89,61 @@ public class ChainingHashtable<K extends Comparable<K>, V> implements Dictionary
     }
     
     private Dictionary<K, V> getMap(K key) throws NullPointerException {
-        if(key == null)
+        if (key == null)
             throw new NullPointerException("Key is not allowed to be null");
         int index = hash(key) % capacity;
         return array[index];
     }
     
-    /**
-     * {@inheritDoc}
-     * This implementation takes constant time.
-     */
     public V get(K key) throws NullPointerException {
-        if(key == null)
+        if (key == null)
             throw new NullPointerException("Key is not allowed to be null");
         return getMap(key).get(key);
     }
     
-    /**
-     * {@inheritDoc}
-     * Warning: This implementation takes linear time. The resulting set is not synchronized to the map.
-     */
     public Set<K> getAllKeys() {
         Set<K> keySet = new HashSet<K>(size);
-        for(Dictionary<K,V> st : array)
-            if(st != null)
-            keySet.addAll(st.getAllKeys());
+        for (Dictionary<K, V> st : array)
+            if (st != null)
+                keySet.addAll(st.getAllKeys());
         return keySet;
     }
     
-    /**
-     * {@inheritDoc}
-     * This implementation takes constant time.
-     */
     public boolean containsKey(K key) throws NullPointerException {
         if (key == null)
             throw new NullPointerException("Key is not allowed to be null");
         return getMap(key).containsKey(key);
     }
     
-    /**
-     * {@inheritDoc}
-     * This implementation takes linear time.
-     */
     public boolean containsValue(V value) throws NullPointerException {
         if (value == null)
             throw new NullPointerException("Value is not allowed to be null");
-        for(Dictionary<K, V> st : array)
-            if(st.containsValue(value))
-            return true;
+        for (Dictionary<K, V> st : array)
+            if (st.containsValue(value))
+                return true;
         return false;
     }
     
-    
     public V put(K key, V val) throws NullPointerException {
-        if(key == null)
+        if (key == null)
             throw new NullPointerException("Key is not allowed to be null");
-        if(val == null)
+        if (val == null)
             throw new NullPointerException("Value is not allowed to be null");
         
         V value = getMap(key).put(key, val);
-        if(value == null){
+        if (value == null) {
             size++;
             resize();
         }
         return value;
     }
     
-    public boolean canRemove() {
-        return newDictionary().canRemove();
-    }
-    
-    public V remove(K key) throws NullPointerException {
-        if(key == null)
+    public V delete(K key) throws NullPointerException {
+        if (key == null)
             throw new NullPointerException("Key is not allowed to be null");
         
-        V value = getMap(key).remove(key);
-        if(value != null){
+        V value = getMap(key).delete(key);
+        if (value != null) {
             size--;
             resize();
         }
@@ -180,27 +151,27 @@ public class ChainingHashtable<K extends Comparable<K>, V> implements Dictionary
     }
     
     public void clear() {
-  for (K key : getAllKeys())
-   remove(key);
- }
-    
-    private Dictionary<K, V> newDictionary(){
-        return supplier.<K, V>getNew();
+        for (K key : getAllKeys())
+            delete(key);
     }
     
-    private void resize(){
-        if(!(size<capacity*minFullness && capacity>11) && !(size>capacity*maxFullness))
+    private Dictionary<K, V> newDictionary() {
+        return supplier.<K, V> getNew();
+    }
+    
+    private void resize() {
+        if (!(size < capacity * minFullness && capacity > 11) && !(size > capacity * maxFullness))
             return;
         
-        int newcap = (int) (size/setFullness);
+        int newcap = (int) (size / setFullness);
         
         @SuppressWarnings("unchecked")
         Dictionary<K, V>[] a = (Dictionary<K, V>[]) new Dictionary[newcap];
         
-        for(int i=0; i<newcap; i++)
+        for (int i = 0; i < newcap; i++)
             a[i] = newDictionary();
         
-        for(K key : this.getAllKeys()){
+        for (K key : this.getAllKeys()) {
             V val = this.get(key);
             int index = hash(key) % newcap;
             a[index].put(key, val);
@@ -210,15 +181,14 @@ public class ChainingHashtable<K extends Comparable<K>, V> implements Dictionary
         this.capacity = newcap;
     }
     
-    public String toString(){
-     if (setFullness == DEF_SET && maxFullness == DEF_MAX && minFullness == DEF_MIN)
-      return String.format("Chaining Hashtable (%s)", supplier);
-     else if (setFullness == DEF_SET)
-      return String.format("Chaining Hashtable (%s, %.0f, %.0f)", supplier, maxFullness, minFullness);
-     else
-      return String.format("Chaining Hashtable (%s, %.0f, %.0f, %.0f)", supplier, maxFullness, minFullness, setFullness);
-     
-     //return String.format("Hashtable(%s, %2.0f, %2.0f, %2.0f)", supplier, maxFullness, minFullness, setFullness, size);
+    public String toString() {
+        if (setFullness == DEF_SET && maxFullness == DEF_MAX && minFullness == DEF_MIN)
+            return String.format("Chaining Hashtable (%s)", supplier);
+        else if (setFullness == DEF_SET)
+            return String.format("Chaining Hashtable (%s, %.0f, %.0f)", supplier, maxFullness, minFullness);
+        else
+            return String.format("Chaining Hashtable (%s, %.0f, %.0f, %.0f)", supplier, maxFullness, minFullness,
+                    setFullness);
     }
 }
 
@@ -229,35 +199,37 @@ class ChainingHashtableSupplier implements DictionarySupplier {
     private final DictionarySupplier supplier;
     
     /**
-     * Constructs empty {@code ChainingHashtable}'s with the specified {@code maximum}, {@code minimum}, and {@code set} fullness ratios
+     * Constructs empty {@code ChainingHashtable}'s with the specified {@code maximum}, {@code minimum}, and {@code set}
+     * fullness ratios
      * 
      * @param delegateSupplier
-     * @param  maximum the maximum fullness
-     * @param  minimum the minimum fullness
-     * @param setFactor 
+     * @param maximum the maximum fullness
+     * @param minimum the minimum fullness
+     * @param setFactor
      * 
      * @see ChainingHashtable
      */
-    public ChainingHashtableSupplier(DictionarySupplier delegateSupplier, double maximum, double minimum, double setFactor) {     
+    public ChainingHashtableSupplier(DictionarySupplier delegateSupplier, double maximum, double minimum,
+            double setFactor) {
         supplier = delegateSupplier;
         max = maximum;
         min = minimum;
         set = setFactor;
     }
     
-    public ChainingHashtableSupplier(DictionarySupplier delegateSupplier, double maximum, double minimum){
+    public ChainingHashtableSupplier(DictionarySupplier delegateSupplier, double maximum, double minimum) {
         this(delegateSupplier, maximum, minimum, ChainingHashtable.DEF_SET);
     }
     
-    public ChainingHashtableSupplier(DictionarySupplier delegateSupplier){
+    public ChainingHashtableSupplier(DictionarySupplier delegateSupplier) {
         this(delegateSupplier, ChainingHashtable.DEF_MAX, ChainingHashtable.DEF_MIN);
     }
     
-    public ChainingHashtableSupplier(double maximum, double minimum){
+    public ChainingHashtableSupplier(double maximum, double minimum) {
         this(ChainingHashtable.DEF_SUPPLIER, maximum, minimum);
     }
     
-    public ChainingHashtableSupplier(){
+    public ChainingHashtableSupplier() {
         this(ChainingHashtable.DEF_SUPPLIER);
     }
     
@@ -269,4 +241,3 @@ class ChainingHashtableSupplier implements DictionarySupplier {
         return String.format("HT:%s", supplier.toString());
     }
 }
-    
