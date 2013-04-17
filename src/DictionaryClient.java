@@ -448,10 +448,7 @@ class StatsList {
         return stddev() / Math.sqrt(size());
     }
     
-    @Override
     public String toString() {
         return String.format("%6.3f (%6.3f)", mean(), stddevMean());
     }
 }
-
-// 412+263+450+162+30+202+98+18

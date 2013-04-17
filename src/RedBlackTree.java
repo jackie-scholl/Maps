@@ -4,7 +4,7 @@ import java.util.Set;
 /**
  * A left-leaning red-black binary search tree implementation.
  * <p>
- * In editing this, I used [PAPER CITATION - Robert Sedgewick].
+ * In adding deletion functionality, I used Robert Sedgewick's [TITLE] - {@link http://www.cs.princeton.edu/~rs/talks/LLRB/LLRB.pdf}.
  * 
  * @author Jackson Scholl
  * 
@@ -334,31 +334,3 @@ class RedBlackTreeSupplier implements DictionarySupplier {
         return "RBT";
     }
 }
-
-/*
- * public static void main(String[] args) { RedBlackTree<String, String> dict = new RedBlackTree<String, String>();
- * dict.put("orange", "fruit"); dict.put("bread", "starch"); dict.put("giraffe", "animal"); dict.put("pear", "fruit");
- * dict.put("mango", "thing"); System.out.println(dict.toString2());
- * 
- * dict.deleteMin();
- * 
- * System.out.println(dict.toString2());
- * 
- * //DictionaryClient.main(new String[]{}); }
- */
-/*
- * public boolean checkInvariants() { numBlackLinks(root); checkInvariants(root); return true; }
- * 
- * private void checkInvariants(Node n) { if (n == null) return; assert !isRed(n) || !isRed(n.l); // this and left child
- * can't both be red assert !isRed(n.r); // color of right can't be red checkInvariants(n.l); checkInvariants(n.r); }
- * 
- * private int numBlackLinks(Node n) { if (n == null) return 0; int add = (n.color == BLACK) ? 1 : 0; int x =
- * numBlackLinks(n.l); assert x == numBlackLinks(n.r); return x + add; }
- * 
- * public String toString2() { return toString2(root, 0); }
- * 
- * private String toString2(Node n, int x) { if (n == null) return "";
- * 
- * String s = ""; for (int i = 0; i < x; i++) s += "    "; s += String.format("%s%n", n.toString()); s += toString2(n.l,
- * x + 1); s += toString2(n.r, x + 1); return s; }
- */

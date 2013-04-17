@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="javadoc">
+    <target name="javadoc">
+        <javadoc access="private" additionalparam=" -link http://docs.oracle.com/javase/7/docs/api" author="true" classpath="." destdir="doc" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" source="1.7" sourcefiles="src/Mock.java,src/DictionaryClient.java,src/Dictionary.java,src/ProbingHashtable.java, src/RedBlackTree.java,src/ChainingHashtable.java,src/LinkedList.java" sourcepath="src" splitindex="true" use="true" version="true" verbose="true"/>
+    </target>
+</project>
